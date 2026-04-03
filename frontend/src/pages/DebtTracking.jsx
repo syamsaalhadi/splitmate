@@ -7,7 +7,7 @@ const DebtTracking = () => {
     <div className="bg-surface text-on-surface min-h-screen">
       <Sidebar />
 
-      <TopAppBar searchPlaceholder="Cari teman..." />
+      <TopAppBar searchPlaceholder="Search friends..." />
       {/* Main Content Canvas */}
       <main className="pt-24 pb-20 md:ml-64 px-6 min-h-screen">
         <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">

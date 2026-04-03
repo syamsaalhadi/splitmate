@@ -69,26 +69,7 @@ const Login = () => {
               </div>
             </form>
 
-            {/* Divider */}
-            <div className="relative my-8 text-center">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-outline-variant/30"></div>
-              </div>
-              <span className="relative px-4 bg-surface-container-lowest text-sm text-outline font-medium font-body">atau</span>
-            </div>
 
-            {/* SSO Button */}
-            <button
-              type="button"
-              className="w-full py-3.5 flex items-center justify-center gap-3 bg-surface border border-outline-variant/50 hover:bg-surface-container-low text-on-surface font-semibold rounded-full transition-all duration-200 active:scale-95 font-body"
-            >
-              <img
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_f-gJhQw7VeFNNQvUv0EkwP00Q9Zfhrj1ARmjG-WL6gwGGeuybwRUsBE6ApK6iFEEvzQZX6hNgGN41__cBsOULUParfSLnyephszvDtOBAPeVQ2OxuZ7biIEK4IR1j6yZjg93SOnTD-sqa2-tmMC1JVZi3nXJekZQhaEAuqqpA9lce9BXPUxNltGB4S6lqdFTOCvD6RvPqVSH4M81Ymi0tfeOAN3aIYCVbS8-Ta4q1F1s0PD1Cl8Izh20e2NF97tBG_7sn9ma_VQ"
-                alt="Google Logo"
-                className="w-5 h-5"
-              />
-              Masuk dengan Google
-            </button>
 
             {/* Redirect Link */}
             <div className="mt-8 text-center border-t border-outline-variant/20 pt-6">

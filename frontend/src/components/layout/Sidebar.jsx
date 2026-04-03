@@ -5,9 +5,10 @@ const Sidebar = () => {
   const location = useLocation();
 
   return (
-    <aside className="h-screen w-64 fixed left-0 top-0 border-r border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 flex flex-col gap-2 p-4 pt-20 hidden md:flex">
-      <div className="mb-6 px-4">
-        <h2 className="text-xl font-black text-indigo-700 dark:text-indigo-400 font-headline">SplitMate</h2>
+    <aside className="h-screen w-64 fixed left-0 top-0 border-r border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 flex flex-col gap-2 p-4 pt-0 hidden md:flex">
+      {/* Container matches TopAppBar height to align perfectly */}
+      <div className="h-16 flex flex-col justify-center px-4 mb-4">
+        <h2 className="text-xl font-black text-indigo-700 dark:text-indigo-400 font-headline leading-tight">SplitMate</h2>
         <p className="text-[10px] text-slate-500 font-semibold tracking-wide uppercase font-headline">Precision Finance</p>
       </div>
 
