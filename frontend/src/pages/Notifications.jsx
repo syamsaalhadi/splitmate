@@ -16,7 +16,7 @@ const Notifications = () => {
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-12">
             <div>
               <h3 className="text-3xl font-extrabold text-on-surface leading-tight tracking-tighter font-headline">
-                Stay Updated. <br/>
+                Stay Updated. <br />
                 <span className="text-primary">Finance is fluid.</span>
               </h3>
             </div>
@@ -30,7 +30,7 @@ const Notifications = () => {
 
           {/* Notifications List (Tonal Transitions) */}
           <div className="space-y-4">
-            
+
             {/* AI Insight Notification (Primary Focus) */}
             <div className="group relative overflow-hidden bg-surface-container-low rounded-3xl p-6 transition-all hover:bg-surface-container hover:-translate-y-1 cursor-pointer">
               <div className="flex gap-5">
@@ -103,7 +103,7 @@ const Notifications = () => {
                     <h4 className="font-bold text-lg text-on-surface font-headline">Undangan Grup Baru</h4>
                     <span className="text-xs font-medium text-on-surface-variant opacity-60 font-body">Yesterday</span>
                   </div>
-                  <p className="text-on-surface-variant text-sm leading-relaxed font-body">Dimas mengundangmu ke grup <span className="font-bold text-primary">'Road Trip Bali 2024'</span>. Kelola pengeluaran perjalananmu bersama!</p>
+                  <p className="text-on-surface-variant text-sm leading-relaxed font-body">Dimas mengundangmu ke grup <span className="font-bold text-primary">'Road Trip Bali 2026'</span>. Kelola pengeluaran perjalananmu bersama!</p>
                   <div className="mt-4 flex gap-3">
                     <button className="px-6 py-2 bg-primary-container text-on-primary rounded-full text-xs font-bold transition-all font-body">Terima</button>
                     <button className="px-6 py-2 border border-outline-variant text-on-surface-variant rounded-full text-xs font-bold transition-all font-body">Tolak</button>

@@ -17,7 +17,7 @@ const Footer = () => {
           <a className="text-slate-500 hover:text-indigo-500 transition-colors text-sm font-medium font-body" href="#">Karir</a>
         </div>
         <div className="text-slate-400 text-xs text-center md:text-right font-body">
-          © 2024 SplitMate. Precision Fluidity in Finance.
+          © 2026 SplitMate. Precision Fluidity in Finance.
         </div>
       </div>
     </footer>

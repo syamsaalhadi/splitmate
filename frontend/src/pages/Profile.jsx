@@ -16,7 +16,7 @@ const Profile = () => {
             {/* Large Centered User Avatar */}
             <div className="relative mb-6">
               <div className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-primary-container p-1 ring-4 ring-primary/10">
-                <img alt="Alex Thompson" className="w-full h-full rounded-full object-cover shadow-xl" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUIGjw1pagkErh0psyRo28u0c9ZStW52dczHLoPHO2gxJCXADK0IDtpwDTZe_6ke2PNfuB2xBJvQlsQhb1nV7d1Ukwk7_wrHv8c1A7VU5T6djQkwbmOJ-0MEjMtftQB_5r-dep3yZSGTZuzVZXLbtxjqyfndEAzuKBfZCr7zJ9u0QSXVVVltupnSJg0lPaCipJjKf3AyIUS9mihCIjZU0MihQhq_9HZHUd8FBYOPyrv6X_sAieWvF5GMDkptL3KfvE9Jh82exy9Zs"/>
+                <img alt="Alex Thompson" className="w-full h-full rounded-full object-cover shadow-xl" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUIGjw1pagkErh0psyRo28u0c9ZStW52dczHLoPHO2gxJCXADK0IDtpwDTZe_6ke2PNfuB2xBJvQlsQhb1nV7d1Ukwk7_wrHv8c1A7VU5T6djQkwbmOJ-0MEjMtftQB_5r-dep3yZSGTZuzVZXLbtxjqyfndEAzuKBfZCr7zJ9u0QSXVVVltupnSJg0lPaCipJjKf3AyIUS9mihCIjZU0MihQhq_9HZHUd8FBYOPyrv6X_sAieWvF5GMDkptL3KfvE9Jh82exy9Zs" />
               </div>
               <button className="absolute bottom-2 right-2 p-2 bg-secondary text-on-secondary rounded-full shadow-lg border-4 border-surface hover:scale-110 transition-transform">
                 <span className="material-symbols-outlined text-sm">edit</span>
@@ -50,7 +50,7 @@ const Profile = () => {
           <div className="max-w-2xl mx-auto">
             <h3 className="text-lg font-bold text-on-surface mb-6 px-2 font-headline">Account Settings</h3>
             <div className="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden divide-y divide-surface-container">
-              
+
               {/* Edit Profile */}
               <button className="w-full flex items-center justify-between p-5 hover:bg-surface-container transition-colors group text-left">
                 <div className="flex items-center gap-4">
@@ -124,7 +124,7 @@ const Profile = () => {
         {/* Footer Accent */}
         <footer className="mt-20 py-8 px-6 border-t border-surface-container-high text-center">
           <p className="text-xs text-outline uppercase tracking-[0.2em] font-bold font-body">SplitMate x The Fluid Ledger</p>
-          <p className="text-xs text-outline-variant mt-2 font-body">© 2024 Alex Thompson Personal Account</p>
+          <p className="text-xs text-outline-variant mt-2 font-body">© 2026 Alex Thompson Personal Account</p>
         </footer>
       </main>
     </div>

@@ -19,7 +19,7 @@ const Insights = () => {
           <div className="relative inline-block">
             <button className="flex items-center gap-3 px-5 py-3 bg-surface-container-lowest border border-outline-variant/30 rounded-full shadow-sm hover:shadow-md transition-all font-body">
               <span className="material-symbols-outlined text-primary">calendar_month</span>
-              <span className="font-bold text-sm">Oktober 2024</span>
+              <span className="font-bold text-sm">Oktober 2026</span>
               <span className="material-symbols-outlined text-on-surface-variant">expand_more</span>
             </button>
           </div>
@@ -215,14 +215,14 @@ const Insights = () => {
               <div className="space-y-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <img alt="Avatar" className="w-8 h-8 rounded-full border-2 border-white/20" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCS8FhnpPn2T_2AHsIFxfOlpxs3_Rvr48b9Nf5fnNCIssQ2_HSffcbFiMc_KLpyuhGlQY3WFjuebiV9RVyaKWBjzRVr0If4AO4YXLZ0LXSrQEJZIJV6F8YcigFT7zBT_XjYkpiH9gXPWwDBoCyJyiCZEC1kG81KeOAgqwyQ510zOBK_Yg_wJFDWTX8Os4vNBEGW_TUn3hpJJjzVPwgNHUhq2bQonAYe2NjHNqLhhjtk1OXDL4v0Z2pO4kihQv0K2lO6GBQTFsQwNJQ"/>
+                    <img alt="Avatar" className="w-8 h-8 rounded-full border-2 border-white/20" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCS8FhnpPn2T_2AHsIFxfOlpxs3_Rvr48b9Nf5fnNCIssQ2_HSffcbFiMc_KLpyuhGlQY3WFjuebiV9RVyaKWBjzRVr0If4AO4YXLZ0LXSrQEJZIJV6F8YcigFT7zBT_XjYkpiH9gXPWwDBoCyJyiCZEC1kG81KeOAgqwyQ510zOBK_Yg_wJFDWTX8Os4vNBEGW_TUn3hpJJjzVPwgNHUhq2bQonAYe2NjHNqLhhjtk1OXDL4v0Z2pO4kihQv0K2lO6GBQTFsQwNJQ" />
                     <span className="text-sm font-medium font-body">Budi</span>
                   </div>
                   <span className="text-xs font-bold bg-white/20 px-3 py-1 rounded-full font-body">Rp 120.000</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <img alt="Avatar" className="w-8 h-8 rounded-full border-2 border-white/20" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnolPy9jAyrl5xyu5R9XK-jXJOvRYpDOiu0ikfwJ2boZBrINQxkxh9jyFfPmMPHrjkw4vCa5ld6tsrvCFmJMGPrZsN0qgnIcqAO2OwbOQU4LN9tpyuViMS4g7Cq_SuO_UNinLvCseGTbMpSu0PGWsnl1RMJVed3lyUekIUxyWqtIdySHTyc6Ol1fuJRRCQ4W3S2HZT1C4i133YZooy-g7e_RGEOSRrhyaKxNFmFH_OqN636aiBd2YcQzOmd-KFE4i0dx42OUXRdmM"/>
+                    <img alt="Avatar" className="w-8 h-8 rounded-full border-2 border-white/20" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnolPy9jAyrl5xyu5R9XK-jXJOvRYpDOiu0ikfwJ2boZBrINQxkxh9jyFfPmMPHrjkw4vCa5ld6tsrvCFmJMGPrZsN0qgnIcqAO2OwbOQU4LN9tpyuViMS4g7Cq_SuO_UNinLvCseGTbMpSu0PGWsnl1RMJVed3lyUekIUxyWqtIdySHTyc6Ol1fuJRRCQ4W3S2HZT1C4i133YZooy-g7e_RGEOSRrhyaKxNFmFH_OqN636aiBd2YcQzOmd-KFE4i0dx42OUXRdmM" />
                     <span className="text-sm font-medium font-body">Sarah</span>
                   </div>
                   <span className="text-xs font-bold text-secondary-container font-body">Lunas</span>
@@ -272,8 +272,8 @@ const Insights = () => {
       <div className="fixed bottom-8 right-8 z-50">
         <div className="backdrop-blur-xl bg-surface-container-high/70 p-4 rounded-2xl shadow-2xl border border-white/20 flex items-center gap-4">
           <div className="flex -space-x-3">
-            <img alt="Member" className="w-8 h-8 rounded-full border-2 border-white" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBaW3hofk_5vwUmr7fMUNiPttCru_3rrkp2h6y9d_jvXWVtfdKMc7rzCtbFPb8RjbOkSeS9wX2FUr0BOL_4pM8LszOgZyxX3DKrwqXIFDq3j68tCUQ2EYour6Tj0x154DpG8efT0yWKIJL0gfjyEeHScIZgEJW-JtHVFg1sFGSuQaPqO9jdpasBqodTukE5PBI8jrzNKx6CLbqVRoZv_pV6wrZKbXwoogSqCDja3heKe0n_oWJ5EwVUlcPBhqO09FN80JqielFjRvo"/>
-            <img alt="Member" className="w-8 h-8 rounded-full border-2 border-white" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJcSvUlmNYi_8FV5zFXf3WTMwFWeJBboriv3XYhC3U0liLE7uCsI22w2WVFnzszrnXl4TSlhRGXQfum9LUVnchKDUNXLTR9zHNKUuMWdt22eGUcbmFZbe-qtmar45bRwHiCI_x38aS22WJSOi5bwL0QEhpXNavD2khHLqcEwNpqVVml4v9FIvkbHf9rDU0LI51_Vu3N5aThUqEv99nOObGAitFW16Y0AI-Prvv1FusfAg7SazFq5wY-36JzJ7vrDBtzdVdD9HqK_w"/>
+            <img alt="Member" className="w-8 h-8 rounded-full border-2 border-white" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBaW3hofk_5vwUmr7fMUNiPttCru_3rrkp2h6y9d_jvXWVtfdKMc7rzCtbFPb8RjbOkSeS9wX2FUr0BOL_4pM8LszOgZyxX3DKrwqXIFDq3j68tCUQ2EYour6Tj0x154DpG8efT0yWKIJL0gfjyEeHScIZgEJW-JtHVFg1sFGSuQaPqO9jdpasBqodTukE5PBI8jrzNKx6CLbqVRoZv_pV6wrZKbXwoogSqCDja3heKe0n_oWJ5EwVUlcPBhqO09FN80JqielFjRvo" />
+            <img alt="Member" className="w-8 h-8 rounded-full border-2 border-white" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJcSvUlmNYi_8FV5zFXf3WTMwFWeJBboriv3XYhC3U0liLE7uCsI22w2WVFnzszrnXl4TSlhRGXQfum9LUVnchKDUNXLTR9zHNKUuMWdt22eGUcbmFZbe-qtmar45bRwHiCI_x38aS22WJSOi5bwL0QEhpXNavD2khHLqcEwNpqVVml4v9FIvkbHf9rDU0LI51_Vu3N5aThUqEv99nOObGAitFW16Y0AI-Prvv1FusfAg7SazFq5wY-36JzJ7vrDBtzdVdD9HqK_w" />
             <div className="w-8 h-8 rounded-full bg-primary border-2 border-white flex items-center justify-center text-[10px] text-white font-bold">+2</div>
           </div>
           <div className="h-8 w-px bg-outline-variant/30"></div>

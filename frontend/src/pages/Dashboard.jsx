@@ -12,7 +12,7 @@ const Dashboard = () => {
       {/* Main Content Canvas */}
       <main className="md:ml-64 pt-24 min-h-screen px-6 pb-12">
         <div className="max-w-6xl mx-auto space-y-8">
-          
+
           {/* Header Section */}
           <header className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
@@ -97,7 +97,7 @@ const Dashboard = () => {
                   </div>
                   <h3 className="font-bold text-lg text-on-surface mb-1 font-headline">Makan Malam Jumat</h3>
                   <p className="text-slate-500 text-xs mb-4 font-body">6 Anggota • Update 2 jam lalu</p>
-                  
+
                   <div className="flex justify-between items-end">
                     <div className="flex -space-x-2">
                       <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFRJxPh9H80JV1KqV4eWZIhTOAo9LvtlFe2tBpkgEZgXFb0o0LRmAq0J4CpL-CX57b52oFAyCYvEL1V7eK-ZhwDU9Toh_ZOlI59Aj0UnDP5DGXNwYEHELF3vEr9zds1G8WthY6O7_ZnrH7JF5RK5N4bJylBoq8y1SkzGtxAUkSZoc-Ph-bhghawVfEusOzgDc9_GKQSJRkXzw1K_aAg-OXie6_vB-c4gVjK_XSzzCFA7JEfrR-Ji01cAs9yrLb2abisjWRhi70qlc" alt="member" className="w-8 h-8 rounded-full border-2 border-white object-cover" />
@@ -119,9 +119,9 @@ const Dashboard = () => {
                     </div>
                     <span className="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-[10px] font-bold uppercase tracking-wider">Belum Lunas</span>
                   </div>
-                  <h3 className="font-bold text-lg text-on-surface mb-1 font-headline">Liburan Bali 2024</h3>
+                  <h3 className="font-bold text-lg text-on-surface mb-1 font-headline">Liburan Bali 2026</h3>
                   <p className="text-slate-500 text-xs mb-4 font-body">4 Anggota • Update 1 hari lalu</p>
-                  
+
                   <div className="flex justify-between items-end">
                     <div className="flex -space-x-2">
                       <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuC47A4yLIZRpJUgTeiJtV_TPtssSDUrGebKG3K9fvo9S6hiU_p5bjwHDHT3WvvenQWLeBtaugUNS61y3HsuEJ27cktsCrmSbVhKowoWO0A0f1U1RUjdghtsAqEl1mfmqMrvpo5iAxXmV6ukNfkypgUu2BazkqiEKqqBcYtXJbhWhXIT_zMPf7vrTnUl-BkWKChaudw6AdcmEGOB8CAk3BPoZDx2QuScMPQMtCldv1wL2ry3ZYVv9ri3s9dVOhkEvA2JP3JI3eHPZV4" alt="member" className="w-8 h-8 rounded-full border-2 border-white object-cover" />
@@ -145,7 +145,7 @@ const Dashboard = () => {
                   </div>
                   <h3 className="font-bold text-lg text-on-surface mb-1 font-headline">Listrik & WiFi Kos</h3>
                   <p className="text-slate-500 text-xs mb-4 font-body">3 Anggota • Update 3 hari lalu</p>
-                  
+
                   <div className="flex justify-between items-end">
                     <div className="flex -space-x-2">
                       <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRXutCxxo4-VJ3wwdUXjZCBkznLzko4390qmUxJ47anHr-CIQp0KknwtGME-IZ_lWGSCWFG5siGEgz9FUTnkmaQ-pLjKReTbwuTf5dD45k7n2V3RXxzm1CkLDxmj8Wf0sXVLUQ7zVHlvKONJ1csGHZkmVKjSnI49GC_QNB9jrgHnq8dXKlfp6C4aQ6-mGfXsevyVDB6cOyNUACscDAyQ0sFdgMXIEmn3ajBfMXbkpGqlATmsmYNelGsmlYfuzn1apZA_nVUQkliG4" alt="member" className="w-8 h-8 rounded-full border-2 border-white object-cover" />
@@ -220,7 +220,7 @@ const Dashboard = () => {
                     </div>
                     <div className="flex-1">
                       <h4 className="text-sm font-bold text-on-surface font-headline">Grab Car Bandara</h4>
-                      <p className="text-[10px] text-slate-500 font-body">Liburan Bali 2024 • 08 Okt</p>
+                      <p className="text-[10px] text-slate-500 font-body">Liburan Bali 2026 • 08 Okt</p>
                     </div>
                     <div className="text-right">
                       <span className="block text-sm font-bold text-error font-body">-Rp 120.000</span>

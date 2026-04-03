@@ -13,7 +13,7 @@ const Login = () => {
       {/* Main Content */}
       <main className="relative z-10 flex-grow flex items-center justify-center p-6 md:p-12">
         <div className="w-full max-w-md">
-          
+
           {/* Brand Identity */}
           <div className="text-center mb-8">
             <h1 className="text-3xl font-extrabold tracking-tight text-primary font-headline">SplitMate</h1>
@@ -32,11 +32,11 @@ const Login = () => {
               <div className="space-y-1.5">
                 <label className="text-sm font-medium text-on-surface block px-1 font-body" htmlFor="email">Email</label>
                 <div className="relative group">
-                  <input 
-                    type="email" 
-                    id="email" 
-                    className="w-full bg-surface-container-high border-none rounded-xl py-3 px-4 text-on-surface placeholder:text-outline focus:ring-1 focus:ring-primary focus:bg-surface-container-lowest transition-all outline-none font-body" 
-                    placeholder="contoh@email.com" 
+                  <input
+                    type="email"
+                    id="email"
+                    className="w-full bg-surface-container-high border-none rounded-xl py-3 px-4 text-on-surface placeholder:text-outline focus:ring-1 focus:ring-primary focus:bg-surface-container-lowest transition-all outline-none font-body"
+                    placeholder="contoh@email.com"
                   />
                 </div>
               </div>
@@ -48,19 +48,19 @@ const Login = () => {
                   <a href="#" className="text-xs font-semibold text-primary hover:underline decoration-2 underline-offset-4 font-body">Lupa Password?</a>
                 </div>
                 <div className="relative group">
-                  <input 
-                    type="password" 
-                    id="password" 
-                    className="w-full bg-surface-container-high border-none rounded-xl py-3 px-4 text-on-surface placeholder:text-outline focus:ring-1 focus:ring-primary focus:bg-surface-container-lowest transition-all outline-none font-body" 
-                    placeholder="••••••••" 
+                  <input
+                    type="password"
+                    id="password"
+                    className="w-full bg-surface-container-high border-none rounded-xl py-3 px-4 text-on-surface placeholder:text-outline focus:ring-1 focus:ring-primary focus:bg-surface-container-lowest transition-all outline-none font-body"
+                    placeholder="••••••••"
                   />
                 </div>
               </div>
 
               {/* Primary Action */}
               <div className="pt-4">
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   className="w-full bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold py-4 rounded-full shadow-lg hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2 font-body"
                 >
                   <span>Masuk</span>
@@ -78,14 +78,14 @@ const Login = () => {
             </div>
 
             {/* SSO Button */}
-            <button 
-              type="button" 
+            <button
+              type="button"
               className="w-full py-3.5 flex items-center justify-center gap-3 bg-surface border border-outline-variant/50 hover:bg-surface-container-low text-on-surface font-semibold rounded-full transition-all duration-200 active:scale-95 font-body"
             >
-              <img 
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_f-gJhQw7VeFNNQvUv0EkwP00Q9Zfhrj1ARmjG-WL6gwGGeuybwRUsBE6ApK6iFEEvzQZX6hNgGN41__cBsOULUParfSLnyephszvDtOBAPeVQ2OxuZ7biIEK4IR1j6yZjg93SOnTD-sqa2-tmMC1JVZi3nXJekZQhaEAuqqpA9lce9BXPUxNltGB4S6lqdFTOCvD6RvPqVSH4M81Ymi0tfeOAN3aIYCVbS8-Ta4q1F1s0PD1Cl8Izh20e2NF97tBG_7sn9ma_VQ" 
-                alt="Google Logo" 
-                className="w-5 h-5" 
+              <img
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_f-gJhQw7VeFNNQvUv0EkwP00Q9Zfhrj1ARmjG-WL6gwGGeuybwRUsBE6ApK6iFEEvzQZX6hNgGN41__cBsOULUParfSLnyephszvDtOBAPeVQ2OxuZ7biIEK4IR1j6yZjg93SOnTD-sqa2-tmMC1JVZi3nXJekZQhaEAuqqpA9lce9BXPUxNltGB4S6lqdFTOCvD6RvPqVSH4M81Ymi0tfeOAN3aIYCVbS8-Ta4q1F1s0PD1Cl8Izh20e2NF97tBG_7sn9ma_VQ"
+                alt="Google Logo"
+                className="w-5 h-5"
               />
               Masuk dengan Google
             </button>
@@ -93,7 +93,7 @@ const Login = () => {
             {/* Redirect Link */}
             <div className="mt-8 text-center border-t border-outline-variant/20 pt-6">
               <p className="text-sm text-on-surface-variant font-body">
-                Belum punya akun? 
+                Belum punya akun?
                 <Link to="/register" className="text-primary font-semibold hover:underline decoration-2 underline-offset-4 ml-1">Daftar</Link>
               </p>
             </div>
@@ -109,14 +109,14 @@ const Login = () => {
                 <span className="text-xs font-medium font-body">Privacy First</span>
               </div>
             </div>
-            
+
           </div>
         </div>
       </main>
 
       {/* Footer Component */}
       <footer className="w-full py-8 px-6 text-center relative z-10">
-        <p className="text-xs text-outline font-body">© 2024 SplitMate. Precision Fluidity in Finance.</p>
+        <p className="text-xs text-outline font-body">© 2026 SplitMate. Precision Fluidity in Finance.</p>
       </footer>
     </div>
   );
