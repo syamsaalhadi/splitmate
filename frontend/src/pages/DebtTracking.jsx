@@ -1,8 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Sidebar from '../components/layout/Sidebar';
 import TopAppBar from '../components/layout/TopAppBar';
+import SettleUpModal from '../components/ui/SettleUpModal';
+import AddFriendModal from '../components/ui/AddFriendModal';
 
 const DebtTracking = () => {
+  const [isSettleModalOpen, setIsSettleModalOpen] = useState(false);
+  const [isAddFriendModalOpen, setIsAddFriendModalOpen] = useState(false);
+  const [settleData, setSettleData] = useState({ contact: "Budi", amount: 150000 });
+
+  const handleSettleUp = (contact, amount) => {
+    setSettleData({ contact, amount });
+    setIsSettleModalOpen(true);
+  };
+
   return (
     <div className="bg-surface text-on-surface min-h-screen">
       <Sidebar />
@@ -10,7 +21,21 @@ const DebtTracking = () => {
       <TopAppBar searchPlaceholder="Search friends..." />
       {/* Main Content Canvas */}
       <main className="pt-24 pb-20 md:ml-64 px-6 min-h-screen">
-        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">
+        <div className="max-w-5xl mx-auto flex flex-col gap-8">
+
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-2">
+            <div>
+              <h1 className="text-4xl font-extrabold tracking-tight text-on-surface mb-2 font-headline">Daftar Teman</h1>
+              <p className="text-on-surface-variant font-body">Lacak hutang dan piutang pribadi untuk pelunasan mudah.</p>
+            </div>
+            <button 
+              onClick={() => setIsAddFriendModalOpen(true)}
+              className="bg-primary text-white px-6 py-3 rounded-full font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-all font-body shadow-lg shadow-primary/20 active:scale-95"
+            >
+              <span className="material-symbols-outlined">person_add</span>
+              Tambah Teman
+            </button>
+          </div>
 
           {/* LEFT: Debt Summary & List */}
           <div className="flex-1 space-y-8">
@@ -104,7 +129,10 @@ const DebtTracking = () => {
                     <button className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl text-xs font-bold bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest transition-colors flex items-center justify-center gap-2 font-body">
                       <span className="material-symbols-outlined text-sm">notifications_active</span> Ingatkan
                     </button>
-                    <button className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl text-xs font-bold bg-primary text-white shadow-md shadow-primary/20 hover:opacity-90 transition-opacity flex items-center justify-center gap-2 font-body">
+                    <button 
+                      onClick={() => handleSettleUp("Budi", 150000)}
+                      className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl text-xs font-bold bg-primary text-white shadow-md shadow-primary/20 hover:opacity-90 transition-opacity flex items-center justify-center gap-2 font-body"
+                    >
                       <span className="material-symbols-outlined text-sm">check_circle</span> Tandai Lunas
                     </button>
                   </div>
@@ -159,84 +187,21 @@ const DebtTracking = () => {
             </div>
           </div>
 
-          {/* RIGHT: Sidebar Form Add Expense Area */}
-          <aside className="w-full lg:w-96">
-            <div className="lg:sticky top-24 bg-surface-container-lowest rounded-2xl p-6 border border-surface-container-highest shadow-xl">
-              <div className="flex items-center justify-between mb-8">
-                <h2 className="text-xl font-bold font-headline">Tambah Pengeluaran</h2>
-                <button className="material-symbols-outlined text-outline">close</button>
-              </div>
-              <form className="space-y-6">
-                <div className="space-y-2">
-                  <label className="text-xs font-bold text-on-surface-variant uppercase tracking-widest font-body">Expense Name</label>
-                  <input className="w-full bg-surface-container-high border-none rounded-lg focus:ring-1 focus:ring-primary px-4 py-3 font-medium font-body outline-none" placeholder="e.g. Beli Oleh-oleh" type="text" />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-xs font-bold text-on-surface-variant uppercase tracking-widest font-body">Amount (IDR)</label>
-                  <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-on-surface-variant font-body">Rp</span>
-                    <input className="w-full bg-surface-container-high border-none rounded-lg focus:ring-1 focus:ring-primary pl-12 pr-4 py-3 font-bold text-xl font-headline outline-none" placeholder="0" type="number" />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <label className="text-xs font-bold text-on-surface-variant uppercase tracking-widest font-body">Paid By</label>
-                  <select className="w-full bg-surface-container-high border-none rounded-lg focus:ring-1 focus:ring-primary px-4 py-3 font-medium font-body outline-none">
-                    <option>Alex (You)</option>
-                    <option>Budi</option>
-                    <option>Citra</option>
-                    <option>Dandi</option>
-                  </select>
-                </div>
 
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <label className="text-xs font-bold text-on-surface-variant uppercase tracking-widest font-body">Split Method</label>
-                  </div>
-                  <div className="flex bg-surface-container-high p-1 rounded-xl">
-                    <button className="flex-1 bg-white text-primary font-bold py-2 rounded-lg shadow-sm font-body" type="button">Sama Rata</button>
-                    <button className="flex-1 text-on-surface-variant font-bold py-2 rounded-lg font-body" type="button">Custom</button>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <label className="text-xs font-bold text-on-surface-variant uppercase tracking-widest font-body">Split with</label>
-                  <div className="space-y-2">
-                    <label className="flex items-center justify-between p-3 bg-surface rounded-xl border border-surface-container-highest cursor-pointer">
-                      <div className="flex items-center gap-3">
-                        <input className="rounded text-primary focus:ring-primary h-4 w-4" defaultChecked type="checkbox" />
-                        <span className="font-medium font-body">Alex</span>
-                      </div>
-                      <span className="text-xs font-bold text-primary/50 font-body">Rp 0</span>
-                    </label>
-                    <label className="flex items-center justify-between p-3 bg-surface rounded-xl border border-surface-container-highest cursor-pointer">
-                      <div className="flex items-center gap-3">
-                        <input className="rounded text-primary focus:ring-primary h-4 w-4" defaultChecked type="checkbox" />
-                        <span className="font-medium font-body">Budi</span>
-                      </div>
-                      <span className="text-xs font-bold text-primary/50 font-body">Rp 0</span>
-                    </label>
-                    <label className="flex items-center justify-between p-3 bg-surface rounded-xl border border-surface-container-highest cursor-pointer">
-                      <div className="flex items-center gap-3">
-                        <input className="rounded text-primary focus:ring-primary h-4 w-4" defaultChecked type="checkbox" />
-                        <span className="font-medium font-body">Citra</span>
-                      </div>
-                      <span className="text-xs font-bold text-primary/50 font-body">Rp 0</span>
-                    </label>
-                    <label className="flex items-center justify-between p-3 bg-surface rounded-xl border border-surface-container-highest cursor-pointer">
-                      <div className="flex items-center gap-3">
-                        <input className="rounded text-primary focus:ring-primary h-4 w-4" defaultChecked type="checkbox" />
-                        <span className="font-medium font-body">Dandi</span>
-                      </div>
-                      <span className="text-xs font-bold text-primary/50 font-body">Rp 0</span>
-                    </label>
-                  </div>
-                </div>
-                <button className="w-full bg-gradient-to-r from-primary to-primary-container text-white py-4 rounded-xl font-extrabold text-lg shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all font-body">Simpan</button>
-              </form>
-            </div>
-          </aside>
         </div>
       </main>
+      
+      {/* Modals outside the main layout flow */}
+      <SettleUpModal 
+        isOpen={isSettleModalOpen} 
+        onClose={() => setIsSettleModalOpen(false)} 
+        defaultContact={settleData.contact}
+        defaultAmount={settleData.amount}
+      />
+      <AddFriendModal 
+        isOpen={isAddFriendModalOpen} 
+        onClose={() => setIsAddFriendModalOpen(false)} 
+      />
     </div>
   );
 };

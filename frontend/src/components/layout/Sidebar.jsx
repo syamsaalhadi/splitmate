@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import NewExpenseModal from '../ui/NewExpenseModal';
 
 const Sidebar = () => {
   const location = useLocation();
+  const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
 
   return (
-    <aside className="h-screen w-64 fixed left-0 top-0 border-r border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 flex flex-col gap-2 p-4 pt-0 hidden md:flex">
+    <>
+      <aside className="h-screen w-64 fixed z-30 left-0 top-0 border-r border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 flex flex-col gap-2 p-4 pt-0 hidden md:flex">
       {/* Container matches TopAppBar height to align perfectly */}
       <div className="h-16 flex flex-col justify-center px-4 mb-4">
         <h2 className="text-xl font-black text-indigo-700 dark:text-indigo-400 font-headline leading-tight">SplitMate</h2>
@@ -40,11 +43,21 @@ const Sidebar = () => {
       </nav>
 
       <div className="mt-auto p-4 bg-indigo-50/50 dark:bg-indigo-950/20 rounded-2xl border border-indigo-100 dark:border-indigo-900/30">
-        <button className="w-full py-3 bg-primary text-white rounded-xl font-bold text-sm shadow-md shadow-primary/20 active:scale-95 transition-all">
+        <button 
+          onClick={() => setIsExpenseModalOpen(true)}
+          className="w-full py-3 bg-primary text-white rounded-xl font-bold text-sm shadow-md shadow-primary/20 active:scale-95 transition-all"
+        >
           New Expense
         </button>
       </div>
     </aside>
+
+    {/* Modal component rendered outside the sidebar for better z-index stacking */}
+    <NewExpenseModal 
+      isOpen={isExpenseModalOpen} 
+      onClose={() => setIsExpenseModalOpen(false)} 
+    />
+    </>
   );
 };
 
