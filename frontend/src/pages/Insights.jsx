@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Sidebar from '../components/layout/Sidebar';
 import TopAppBar from '../components/layout/TopAppBar';
 
 const Insights = () => {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   return (
     <div className="bg-slate-50 dark:bg-slate-950 text-on-surface min-h-screen">
-      <TopAppBar searchPlaceholder="Search transactions..." />
-      <Sidebar />
+      <TopAppBar searchPlaceholder="Search transactions..." onMenuClick={() => setSidebarOpen(true)} />
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       {/* Main Content Area */}
       <main className="md:ml-64 min-h-screen pt-24 p-8 lg:p-12">

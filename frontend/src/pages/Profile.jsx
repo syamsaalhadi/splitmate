@@ -1,15 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Sidebar from '../components/layout/Sidebar';
 import TopAppBar from '../components/layout/TopAppBar';
 
 const Profile = () => {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   return (
     <div className="bg-surface text-on-surface min-h-screen">
-      <Sidebar />
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       {/* Main Content Area */}
       <main className="md:ml-64 min-h-screen">
-        <TopAppBar searchPlaceholder="Search accounts..." />
+        <TopAppBar searchPlaceholder="Search accounts..." onMenuClick={() => setSidebarOpen(true)} />
         {/* Profile Hero Section */}
         <section className="max-w-5xl mx-auto px-6 pt-24 pb-12">
           <div className="relative flex flex-col items-center mb-16 text-center">

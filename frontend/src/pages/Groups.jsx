@@ -6,11 +6,12 @@ import { Link } from 'react-router-dom';
 
 const Groups = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
     <div className="bg-surface text-on-surface min-h-screen">
-      <Sidebar />
-      <TopAppBar searchPlaceholder="Search groups..." />
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      <TopAppBar searchPlaceholder="Search groups..." onMenuClick={() => setSidebarOpen(true)} />
       <main className="md:ml-64 pt-16 min-h-screen">
         <div className="max-w-5xl mx-auto px-6 py-8 flex flex-col gap-8">
           

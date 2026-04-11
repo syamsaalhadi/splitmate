@@ -1,13 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Sidebar from '../components/layout/Sidebar';
 import TopAppBar from '../components/layout/TopAppBar';
 import { Link } from 'react-router-dom';
 
 const Dashboard = () => {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   return (
     <div className="bg-background text-on-background min-h-screen">
-      <TopAppBar searchPlaceholder="Search dashboard..." />
-      <Sidebar />
+      <TopAppBar searchPlaceholder="Search dashboard..." onMenuClick={() => setSidebarOpen(true)} />
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       {/* Main Content Canvas */}
       <main className="md:ml-64 pt-24 min-h-screen px-6 pb-12">

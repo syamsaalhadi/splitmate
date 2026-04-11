@@ -1,24 +1,59 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 const Navbar = () => {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
-    <nav className="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl transition-all duration-300">
-      <div className="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto">
-        <Link to="/" className="text-2xl font-bold text-indigo-900 tracking-tight font-headline">
-          SplitMate
+    <nav className="fixed top-0 left-0 right-0 z-50 flex justify-center px-6 pt-4 transition-all duration-500">
+      <div
+        className={`flex items-center justify-between w-full max-w-4xl px-3 py-2.5 rounded-full border transition-all duration-500 ${
+          scrolled
+            ? 'bg-white/50 backdrop-blur-xl shadow-lg shadow-black/5 border-white/40'
+            : 'bg-white/30 backdrop-blur-lg shadow-md shadow-black/5 border-white/20'
+        }`}
+      >
+        {/* Logo */}
+        <Link
+          to="/"
+          className="flex items-center justify-center w-11 h-11 rounded-full bg-primary text-on-primary hover:opacity-90 transition-all duration-300 shrink-0"
+        >
+          <span
+            className="material-symbols-outlined text-xl"
+            style={{ fontVariationSettings: "'FILL' 1" }}
+          >
+            account_balance_wallet
+          </span>
         </Link>
-        <div className="hidden md:flex items-center space-x-8">
-          <a className="text-indigo-700 font-semibold border-b-2 border-indigo-600 transition-all font-body" href="#fitur">
+
+        {/* Nav Links */}
+        <div className="hidden md:flex items-center gap-2">
+          <a
+            href="#fitur"
+            className="px-5 py-2 text-sm font-semibold text-on-surface/70 hover:text-primary hover:bg-primary/5 rounded-full transition-all duration-300 font-body"
+          >
             Fitur
           </a>
-          <a className="text-slate-600 hover:text-indigo-600 transition-colors font-body" href="#tentang-kami">
+          <a
+            href="#tentang-kami"
+            className="px-5 py-2 text-sm font-semibold text-on-surface/70 hover:text-primary hover:bg-primary/5 rounded-full transition-all duration-300 font-body"
+          >
             Tentang Kami
           </a>
         </div>
+
+        {/* CTA Button */}
         <Link
           to="/register"
-          className="bg-primary-container text-on-primary-container px-6 py-2.5 rounded-full font-semibold hover:opacity-80 active:scale-95 transition-all duration-200"
+          className="px-6 py-2.5 rounded-full bg-primary text-on-primary text-sm font-bold hover:opacity-90 transition-all duration-300 active:scale-95 shrink-0 font-body"
         >
           Mulai Gratis
         </Link>

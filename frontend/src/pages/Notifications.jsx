@@ -1,15 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Sidebar from '../components/layout/Sidebar';
 import TopAppBar from '../components/layout/TopAppBar';
 
 const Notifications = () => {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   return (
     <div className="bg-surface text-on-surface min-h-screen">
-      <Sidebar />
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       {/* Main Content Area */}
       <main className="md:ml-64 min-h-screen">
-        <TopAppBar searchPlaceholder="Search activity..." />
+        <TopAppBar searchPlaceholder="Search activity..." onMenuClick={() => setSidebarOpen(true)} />
         {/* Content Canvas */}
         <div className="pt-24 pb-20 max-w-4xl mx-auto px-6">
           {/* Filters (Asymmetric Layout) */}

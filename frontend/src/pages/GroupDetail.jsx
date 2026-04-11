@@ -6,6 +6,7 @@ import SettleUpModal from '../components/ui/SettleUpModal';
 const GroupDetail = () => {
   const [isSettleModalOpen, setIsSettleModalOpen] = useState(false);
   const [settleData, setSettleData] = useState({ contact: "Grup", amount: 0 });
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleSettleUp = (contact, amount) => {
     setSettleData({ contact, amount });
@@ -14,9 +15,9 @@ const GroupDetail = () => {
 
   return (
     <div className="bg-surface text-on-surface min-h-screen">
-      <Sidebar />
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      <TopAppBar searchPlaceholder="Search groups..." />
+      <TopAppBar searchPlaceholder="Search groups..." onMenuClick={() => setSidebarOpen(true)} />
       {/* Main Content Area */}
       <main className="md:ml-64 pt-16 min-h-screen">
         <div className="max-w-5xl mx-auto px-6 py-8 flex flex-col gap-8">

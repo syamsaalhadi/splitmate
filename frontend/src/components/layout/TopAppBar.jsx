@@ -1,13 +1,17 @@
 import React from 'react';
 
-const TopAppBar = ({ searchPlaceholder = "Search..." }) => {
+const TopAppBar = ({ searchPlaceholder = "Search...", onMenuClick }) => {
   return (
     <header className="fixed top-0 w-full z-40 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl shadow-sm dark:shadow-none border-b border-slate-100 dark:border-slate-800 md:w-[calc(100%-16rem)] md:left-64">
       <div className="flex justify-between items-center px-6 h-16 w-full ml-auto md:ml-0">
         
         {/* Left Side: Mobile Menu & Search Bar */}
         <div className="flex items-center flex-1 gap-4">
-          <button className="md:hidden text-indigo-700 flex items-center justify-center">
+          <button 
+            className="md:hidden text-indigo-700 flex items-center justify-center"
+            onClick={onMenuClick}
+            aria-label="Open menu"
+          >
             <span className="material-symbols-outlined text-2xl">menu</span>
           </button>
           

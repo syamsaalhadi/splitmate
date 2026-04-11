@@ -8,6 +8,7 @@ const DebtTracking = () => {
   const [isSettleModalOpen, setIsSettleModalOpen] = useState(false);
   const [isAddFriendModalOpen, setIsAddFriendModalOpen] = useState(false);
   const [settleData, setSettleData] = useState({ contact: "Budi", amount: 150000 });
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleSettleUp = (contact, amount) => {
     setSettleData({ contact, amount });
@@ -16,9 +17,9 @@ const DebtTracking = () => {
 
   return (
     <div className="bg-surface text-on-surface min-h-screen">
-      <Sidebar />
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      <TopAppBar searchPlaceholder="Search friends..." />
+      <TopAppBar searchPlaceholder="Search friends..." onMenuClick={() => setSidebarOpen(true)} />
       {/* Main Content Canvas */}
       <main className="pt-24 pb-20 md:ml-64 px-6 min-h-screen">
         <div className="max-w-5xl mx-auto flex flex-col gap-8">
