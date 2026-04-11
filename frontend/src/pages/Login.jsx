@@ -1,7 +1,43 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
 
 const Login = () => {
+  const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
+  const [form, setForm] = useState({ email: '', password: '' });
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+
+  const validate = () => {
+    const newErrors = {};
+    if (!form.email.trim()) {
+      newErrors.email = 'Email wajib diisi';
+    } else if (!/\S+@\S+\.\S+/.test(form.email)) {
+      newErrors.email = 'Format email tidak valid';
+    }
+    if (!form.password) {
+      newErrors.password = 'Kata sandi wajib diisi';
+    } else if (form.password.length < 6) {
+      newErrors.password = 'Minimal 6 karakter';
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validate()) return;
+
+    setLoading(true);
+    // Simulate API call — replace with real API later
+    setTimeout(() => {
+      login('mock-jwt-token', { name: 'Alex Thompson', email: form.email });
+      setLoading(false);
+      navigate('/dashboard');
+    }, 800);
+  };
+
   return (
     <div className="bg-surface-container-low min-h-screen flex flex-col">
       {/* Hero Background Texture */}
@@ -16,7 +52,9 @@ const Login = () => {
 
           {/* Brand Identity */}
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-extrabold tracking-tight text-primary font-headline">SplitMate</h1>
+            <Link to="/" className="inline-block">
+              <h1 className="text-3xl font-extrabold tracking-tight text-primary font-headline">SplitMate</h1>
+            </Link>
             <p className="text-on-surface-variant mt-2 text-sm font-body">Kelola pengeluaran bersama dengan presisi.</p>
           </div>
 
@@ -27,7 +65,7 @@ const Login = () => {
               <p className="text-on-surface-variant text-sm font-body">Selamat datang kembali! Silakan masuk ke akun Anda.</p>
             </div>
 
-            <form className="space-y-6">
+            <form className="space-y-6" onSubmit={handleSubmit} noValidate>
               {/* Input Email */}
               <div className="space-y-1.5">
                 <label className="text-sm font-medium text-on-surface block px-1 font-body" htmlFor="email">Email</label>
@@ -35,41 +73,55 @@ const Login = () => {
                   <input
                     type="email"
                     id="email"
-                    className="w-full bg-surface-container-high border-none rounded-xl py-3 px-4 text-on-surface placeholder:text-outline focus:ring-1 focus:ring-primary focus:bg-surface-container-lowest transition-all outline-none font-body"
+                    value={form.email}
+                    onChange={(e) => { setForm({ ...form, email: e.target.value }); setErrors({ ...errors, email: '' }); }}
+                    className={`w-full bg-surface-container-high border rounded-xl py-3 px-4 text-on-surface placeholder:text-outline focus:ring-1 focus:ring-primary focus:bg-surface-container-lowest transition-all outline-none font-body ${errors.email ? 'border-error' : 'border-transparent'}`}
                     placeholder="contoh@email.com"
                   />
                 </div>
+                {errors.email && <p className="text-error text-xs font-medium px-1 font-body">{errors.email}</p>}
               </div>
 
               {/* Input Password */}
               <div className="space-y-1.5">
                 <div className="flex justify-between items-center px-1">
                   <label className="text-sm font-medium text-on-surface font-body" htmlFor="password">Kata Sandi</label>
-                  <a href="#" className="text-xs font-semibold text-primary hover:underline decoration-2 underline-offset-4 font-body">Lupa Password?</a>
+                  <span className="text-xs font-semibold text-primary font-body cursor-pointer hover:underline decoration-2 underline-offset-4">Lupa Password?</span>
                 </div>
                 <div className="relative group">
                   <input
                     type="password"
                     id="password"
-                    className="w-full bg-surface-container-high border-none rounded-xl py-3 px-4 text-on-surface placeholder:text-outline focus:ring-1 focus:ring-primary focus:bg-surface-container-lowest transition-all outline-none font-body"
+                    value={form.password}
+                    onChange={(e) => { setForm({ ...form, password: e.target.value }); setErrors({ ...errors, password: '' }); }}
+                    className={`w-full bg-surface-container-high border rounded-xl py-3 px-4 text-on-surface placeholder:text-outline focus:ring-1 focus:ring-primary focus:bg-surface-container-lowest transition-all outline-none font-body ${errors.password ? 'border-error' : 'border-transparent'}`}
                     placeholder="••••••••"
                   />
                 </div>
+                {errors.password && <p className="text-error text-xs font-medium px-1 font-body">{errors.password}</p>}
               </div>
 
               {/* Primary Action */}
               <div className="pt-4">
                 <button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold py-4 rounded-full shadow-lg hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2 font-body"
+                  disabled={loading}
+                  className="w-full bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold py-4 rounded-full shadow-lg hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2 font-body disabled:opacity-60"
                 >
-                  <span>Masuk</span>
-                  <span className="material-symbols-outlined text-lg">login</span>
+                  {loading ? (
+                    <>
+                      <span className="material-symbols-outlined text-lg animate-spin">progress_activity</span>
+                      <span>Memproses...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Masuk</span>
+                      <span className="material-symbols-outlined text-lg">login</span>
+                    </>
+                  )}
                 </button>
               </div>
             </form>
-
-
 
             {/* Redirect Link */}
             <div className="mt-8 text-center border-t border-outline-variant/20 pt-6">

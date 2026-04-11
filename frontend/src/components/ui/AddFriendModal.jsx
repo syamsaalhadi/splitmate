@@ -1,7 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 const AddFriendModal = ({ isOpen, onClose }) => {
+  // Close on Escape
+  useEffect(() => {
+    const handleEsc = (e) => { if (e.key === 'Escape') onClose(); };
+    if (isOpen) document.addEventListener('keydown', handleEsc);
+    return () => document.removeEventListener('keydown', handleEsc);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText('https://splitmate.app/invite/abc123').catch(() => {});
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -12,7 +23,7 @@ const AddFriendModal = ({ isOpen, onClose }) => {
       ></div>
 
       {/* Modal Content */}
-      <div className="bg-white dark:bg-slate-900 w-full max-w-md rounded-[2rem] shadow-2xl relative z-10 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      <div className="bg-white dark:bg-slate-900 w-full max-w-md rounded-[2rem] shadow-2xl relative z-10 overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-slate-800/60 bg-surface-container-lowest">
           <div className="flex items-center gap-4">
@@ -52,7 +63,10 @@ const AddFriendModal = ({ isOpen, onClose }) => {
             <div>
               <p className="text-sm font-bold font-headline mb-1">Bagikan Tautan Undangan</p>
               <p className="text-xs text-on-surface-variant font-body mb-3">Kirim link ini via WhatsApp untuk mulai berbagi pengeluaran.</p>
-              <button className="flex items-center gap-2 text-xs font-bold bg-surface-container-highest px-3 py-2 rounded-lg text-on-surface active:scale-95 transition-all font-body">
+              <button 
+                onClick={handleCopyLink}
+                className="flex items-center gap-2 text-xs font-bold bg-surface-container-highest px-3 py-2 rounded-lg text-on-surface active:scale-95 transition-all font-body"
+              >
                 <span className="material-symbols-outlined text-sm">content_copy</span>
                 Salin Tautan
               </button>
@@ -70,6 +84,7 @@ const AddFriendModal = ({ isOpen, onClose }) => {
             Tutup
           </button>
           <button 
+            onClick={onClose}
             className="flex-[2] py-3.5 px-4 rounded-xl font-bold bg-primary text-white shadow-lg shadow-primary/30 hover:brightness-110 active:scale-[0.98] transition-all font-body text-sm flex items-center justify-center gap-2"
           >
             Kirim Undangan <span className="material-symbols-outlined text-lg">send</span>

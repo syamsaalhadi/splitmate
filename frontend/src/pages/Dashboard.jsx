@@ -1,13 +1,18 @@
 import React, { useState } from 'react';
 import Sidebar from '../components/layout/Sidebar';
 import TopAppBar from '../components/layout/TopAppBar';
+import BottomNav from '../components/layout/BottomNav';
+import NewExpenseModal from '../components/ui/NewExpenseModal';
+import CreateGroupModal from '../components/ui/CreateGroupModal';
 import { Link } from 'react-router-dom';
 
 const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
+  const [isGroupModalOpen, setIsGroupModalOpen] = useState(false);
 
   return (
-    <div className="bg-background text-on-background min-h-screen">
+    <div className="bg-background text-on-background min-h-screen pb-20 md:pb-0">
       <TopAppBar searchPlaceholder="Search dashboard..." onMenuClick={() => setSidebarOpen(true)} />
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
@@ -22,11 +27,17 @@ const Dashboard = () => {
               <p className="text-on-surface-variant mt-1 font-body">Halo Alex, ini performa pengeluaranmu bulan ini.</p>
             </div>
             <div className="flex gap-3">
-              <button className="px-6 py-2.5 bg-secondary-container text-on-secondary-container rounded-full font-semibold text-sm hover:opacity-90 transition-all flex items-center gap-2 font-body">
+              <button 
+                onClick={() => setIsGroupModalOpen(true)}
+                className="px-6 py-2.5 bg-secondary-container text-on-secondary-container rounded-full font-semibold text-sm hover:opacity-90 transition-all flex items-center gap-2 font-body"
+              >
                 <span className="material-symbols-outlined text-lg">group_add</span>
                 Buat Grup Baru
               </button>
-              <button className="px-6 py-2.5 bg-primary text-on-primary rounded-full font-semibold text-sm hover:opacity-90 transition-all flex items-center gap-2 shadow-md font-body">
+              <button 
+                onClick={() => setIsExpenseModalOpen(true)}
+                className="px-6 py-2.5 bg-primary text-on-primary rounded-full font-semibold text-sm hover:opacity-90 transition-all flex items-center gap-2 shadow-md font-body"
+              >
                 <span className="material-symbols-outlined text-lg">add_circle</span>
                 Catat Pengeluaran
               </button>
@@ -85,12 +96,12 @@ const Dashboard = () => {
             <section className="lg:col-span-2 space-y-6">
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-bold text-on-surface font-headline">Grup Terbaru</h2>
-                <button className="text-primary font-semibold text-sm hover:underline font-body">Lihat Semua</button>
+                <Link to="/groups" className="text-primary font-semibold text-sm hover:underline font-body">Lihat Semua</Link>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Group Card 1 */}
-                <div className="p-5 bg-surface-container-low rounded-3xl hover:bg-surface-container-high transition-colors group cursor-pointer border border-outline-variant/5">
+                <Link to="/groups/makan-malam-jumat" className="block p-5 bg-surface-container-low rounded-3xl hover:bg-surface-container-high transition-colors group cursor-pointer border border-outline-variant/5">
                   <div className="flex justify-between items-start mb-4">
                     <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm">
                       <span className="material-symbols-outlined text-indigo-600">restaurant</span>
@@ -99,7 +110,6 @@ const Dashboard = () => {
                   </div>
                   <h3 className="font-bold text-lg text-on-surface mb-1 font-headline">Makan Malam Jumat</h3>
                   <p className="text-slate-500 text-xs mb-4 font-body">6 Anggota • Update 2 jam lalu</p>
-
                   <div className="flex justify-between items-end">
                     <div className="flex -space-x-2">
                       <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFRJxPh9H80JV1KqV4eWZIhTOAo9LvtlFe2tBpkgEZgXFb0o0LRmAq0J4CpL-CX57b52oFAyCYvEL1V7eK-ZhwDU9Toh_ZOlI59Aj0UnDP5DGXNwYEHELF3vEr9zds1G8WthY6O7_ZnrH7JF5RK5N4bJylBoq8y1SkzGtxAUkSZoc-Ph-bhghawVfEusOzgDc9_GKQSJRkXzw1K_aAg-OXie6_vB-c4gVjK_XSzzCFA7JEfrR-Ji01cAs9yrLb2abisjWRhi70qlc" alt="member" className="w-8 h-8 rounded-full border-2 border-white object-cover" />
@@ -111,10 +121,10 @@ const Dashboard = () => {
                       <span className="font-bold text-on-surface font-headline">Rp 840.000</span>
                     </div>
                   </div>
-                </div>
+                </Link>
 
                 {/* Group Card 2 */}
-                <div className="p-5 bg-surface-container-low rounded-3xl hover:bg-surface-container-high transition-colors group cursor-pointer border border-outline-variant/5">
+                <Link to="/groups/liburan-bali" className="block p-5 bg-surface-container-low rounded-3xl hover:bg-surface-container-high transition-colors group cursor-pointer border border-outline-variant/5">
                   <div className="flex justify-between items-start mb-4">
                     <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm">
                       <span className="material-symbols-outlined text-indigo-600">flight</span>
@@ -123,7 +133,6 @@ const Dashboard = () => {
                   </div>
                   <h3 className="font-bold text-lg text-on-surface mb-1 font-headline">Liburan Bali 2026</h3>
                   <p className="text-slate-500 text-xs mb-4 font-body">4 Anggota • Update 1 hari lalu</p>
-
                   <div className="flex justify-between items-end">
                     <div className="flex -space-x-2">
                       <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuC47A4yLIZRpJUgTeiJtV_TPtssSDUrGebKG3K9fvo9S6hiU_p5bjwHDHT3WvvenQWLeBtaugUNS61y3HsuEJ27cktsCrmSbVhKowoWO0A0f1U1RUjdghtsAqEl1mfmqMrvpo5iAxXmV6ukNfkypgUu2BazkqiEKqqBcYtXJbhWhXIT_zMPf7vrTnUl-BkWKChaudw6AdcmEGOB8CAk3BPoZDx2QuScMPQMtCldv1wL2ry3ZYVv9ri3s9dVOhkEvA2JP3JI3eHPZV4" alt="member" className="w-8 h-8 rounded-full border-2 border-white object-cover" />
@@ -135,10 +144,10 @@ const Dashboard = () => {
                       <span className="font-bold text-on-surface font-headline">Rp 5.420.000</span>
                     </div>
                   </div>
-                </div>
+                </Link>
 
                 {/* Group Card 3 */}
-                <div className="p-5 bg-surface-container-low rounded-3xl hover:bg-surface-container-high transition-colors group cursor-pointer border border-outline-variant/5">
+                <Link to="/groups/listrik-wifi-kos" className="block p-5 bg-surface-container-low rounded-3xl hover:bg-surface-container-high transition-colors group cursor-pointer border border-outline-variant/5">
                   <div className="flex justify-between items-start mb-4">
                     <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm">
                       <span className="material-symbols-outlined text-indigo-600">home</span>
@@ -147,7 +156,6 @@ const Dashboard = () => {
                   </div>
                   <h3 className="font-bold text-lg text-on-surface mb-1 font-headline">Listrik & WiFi Kos</h3>
                   <p className="text-slate-500 text-xs mb-4 font-body">3 Anggota • Update 3 hari lalu</p>
-
                   <div className="flex justify-between items-end">
                     <div className="flex -space-x-2">
                       <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRXutCxxo4-VJ3wwdUXjZCBkznLzko4390qmUxJ47anHr-CIQp0KknwtGME-IZ_lWGSCWFG5siGEgz9FUTnkmaQ-pLjKReTbwuTf5dD45k7n2V3RXxzm1CkLDxmj8Wf0sXVLUQ7zVHlvKONJ1csGHZkmVKjSnI49GC_QNB9jrgHnq8dXKlfp6C4aQ6-mGfXsevyVDB6cOyNUACscDAyQ0sFdgMXIEmn3ajBfMXbkpGqlATmsmYNelGsmlYfuzn1apZA_nVUQkliG4" alt="member" className="w-8 h-8 rounded-full border-2 border-white object-cover" />
@@ -158,30 +166,29 @@ const Dashboard = () => {
                       <span className="font-bold text-on-surface font-headline">Rp 1.250.000</span>
                     </div>
                   </div>
-                </div>
-
+                </Link>
               </div>
             </section>
 
             {/* Right Column: Transactions & Insight CTA */}
             <section className="space-y-6">
-              <div className="p-6 bg-gradient-to-br from-indigo-900 to-primary rounded-3xl text-white relative overflow-hidden">
+              <Link to="/insights" className="block p-6 bg-gradient-to-br from-indigo-900 to-primary rounded-3xl text-white relative overflow-hidden group">
                 <div className="relative z-10">
                   <h3 className="font-bold text-xl mb-2 font-headline">Lihat Insight</h3>
                   <p className="text-indigo-100 text-sm mb-6 leading-relaxed font-body">Analisis kebiasaan belanjamu dan hemat hingga 20% bulan depan.</p>
-                  <button className="w-full py-3 bg-white text-primary rounded-2xl font-bold text-sm hover:bg-indigo-50 transition-colors font-body">
+                  <span className="inline-block w-full py-3 bg-white text-primary rounded-2xl font-bold text-sm text-center group-hover:bg-indigo-50 transition-colors font-body">
                     Mulai Analisis
-                  </button>
+                  </span>
                 </div>
                 <div className="absolute -right-4 -bottom-4 opacity-20">
                   <span className="material-symbols-outlined text-9xl">insights</span>
                 </div>
-              </div>
+              </Link>
 
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <h2 className="text-lg font-bold text-on-surface font-headline">Aktivitas Terakhir</h2>
-                  <button className="text-primary font-semibold text-xs font-body">Filter</button>
+                  <Link to="/activity" className="text-primary font-semibold text-xs font-body hover:underline">Lihat Semua</Link>
                 </div>
 
                 <div className="space-y-3">
@@ -236,28 +243,12 @@ const Dashboard = () => {
         </div>
       </main>
 
-      {/* Footer is not standard in dashboard, but mobile navigation is */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-lg border-t border-slate-100 px-6 py-3 flex justify-between items-center z-50">
-        <button className="flex flex-col items-center gap-1 text-primary">
-          <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>dashboard</span>
-          <span className="text-[10px] font-bold font-headline">Dash</span>
-        </button>
-        <button className="flex flex-col items-center gap-1 text-slate-400">
-          <span className="material-symbols-outlined">group</span>
-          <span className="text-[10px] font-bold font-headline">Groups</span>
-        </button>
-        <button className="w-12 h-12 bg-primary rounded-2xl flex items-center justify-center text-white -mt-8 shadow-lg shadow-primary/30 active:scale-95 transition-transform">
-          <span className="material-symbols-outlined">add</span>
-        </button>
-        <button className="flex flex-col items-center gap-1 text-slate-400">
-          <span className="material-symbols-outlined">insights</span>
-          <span className="text-[10px] font-bold font-headline">Insights</span>
-        </button>
-        <button className="flex flex-col items-center gap-1 text-slate-400">
-          <span className="material-symbols-outlined">person</span>
-          <span className="text-[10px] font-bold font-headline">Profile</span>
-        </button>
-      </nav>
+      {/* Bottom Nav */}
+      <BottomNav onAddClick={() => setIsExpenseModalOpen(true)} />
+
+      {/* Modals */}
+      <NewExpenseModal isOpen={isExpenseModalOpen} onClose={() => setIsExpenseModalOpen(false)} />
+      <CreateGroupModal isOpen={isGroupModalOpen} onClose={() => setIsGroupModalOpen(false)} />
     </div>
   );
 };

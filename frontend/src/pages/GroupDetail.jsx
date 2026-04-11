@@ -1,12 +1,26 @@
 import React, { useState } from 'react';
 import Sidebar from '../components/layout/Sidebar';
 import TopAppBar from '../components/layout/TopAppBar';
+import BottomNav from '../components/layout/BottomNav';
+import NewExpenseModal from '../components/ui/NewExpenseModal';
 import SettleUpModal from '../components/ui/SettleUpModal';
+import { useParams } from 'react-router-dom';
 
 const GroupDetail = () => {
   const [isSettleModalOpen, setIsSettleModalOpen] = useState(false);
   const [settleData, setSettleData] = useState({ contact: "Grup", amount: 0 });
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
+  const { id } = useParams();
+
+  // Map route IDs to group names (mock data)
+  const groupNames = {
+    'liburan-bali': 'Liburan Bali 2026',
+    'kosan': 'Iuran Kosan',
+    'makan-malam-jumat': 'Makan Malam Jumat',
+    'listrik-wifi-kos': 'Listrik & WiFi Kos',
+  };
+  const groupName = groupNames[id] || id?.replace(/-/g, ' ')?.replace(/\b\w/g, c => c.toUpperCase()) || 'Detail Grup';
 
   const handleSettleUp = (contact, amount) => {
     setSettleData({ contact, amount });
@@ -14,7 +28,7 @@ const GroupDetail = () => {
   };
 
   return (
-    <div className="bg-surface text-on-surface min-h-screen">
+    <div className="bg-surface text-on-surface min-h-screen pb-20 md:pb-0">
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       <TopAppBar searchPlaceholder="Search groups..." onMenuClick={() => setSidebarOpen(true)} />
@@ -31,7 +45,7 @@ const GroupDetail = () => {
                     <span className="material-symbols-outlined text-primary text-sm">flight_takeoff</span>
                     <span className="text-xs font-bold uppercase tracking-widest text-primary/60 font-body">Active Trip</span>
                   </div>
-                  <h1 className="text-4xl font-extrabold tracking-tight text-on-surface mb-2 font-headline">Liburan Bali 2026</h1>
+                  <h1 className="text-4xl font-extrabold tracking-tight text-on-surface mb-2 font-headline">{groupName}</h1>
                   <p className="text-on-surface-variant font-medium font-body">4 members • Travel & Leisure</p>
                 </div>
                 <div className="bg-surface-container-low p-6 rounded-xl text-right">
@@ -236,6 +250,12 @@ const GroupDetail = () => {
         defaultContact={settleData.contact}
         defaultAmount={settleData.amount}
       />
+      <NewExpenseModal 
+        isOpen={isExpenseModalOpen} 
+        onClose={() => setIsExpenseModalOpen(false)} 
+      />
+
+      <BottomNav onAddClick={() => setIsExpenseModalOpen(true)} />
     </div>
   );
 };

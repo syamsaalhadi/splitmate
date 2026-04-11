@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
 import Sidebar from '../components/layout/Sidebar';
 import TopAppBar from '../components/layout/TopAppBar';
+import BottomNav from '../components/layout/BottomNav';
+import NewExpenseModal from '../components/ui/NewExpenseModal';
 
 const Insights = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
+
   return (
-    <div className="bg-slate-50 dark:bg-slate-950 text-on-surface min-h-screen">
+    <div className="bg-slate-50 dark:bg-slate-950 text-on-surface min-h-screen pb-20 md:pb-0">
       <TopAppBar searchPlaceholder="Search transactions..." onMenuClick={() => setSidebarOpen(true)} />
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
@@ -270,8 +274,8 @@ const Insights = () => {
         </div>
       </main>
 
-      {/* Floating Live Split Status */}
-      <div className="fixed bottom-8 right-8 z-50">
+      {/* Floating Live Split Status — hidden on mobile to avoid overlap with BottomNav */}
+      <div className="hidden md:block fixed bottom-8 right-8 z-50">
         <div className="backdrop-blur-xl bg-surface-container-high/70 p-4 rounded-2xl shadow-2xl border border-white/20 flex items-center gap-4">
           <div className="flex -space-x-3">
             <img alt="Member" className="w-8 h-8 rounded-full border-2 border-white" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBaW3hofk_5vwUmr7fMUNiPttCru_3rrkp2h6y9d_jvXWVtfdKMc7rzCtbFPb8RjbOkSeS9wX2FUr0BOL_4pM8LszOgZyxX3DKrwqXIFDq3j68tCUQ2EYour6Tj0x154DpG8efT0yWKIJL0gfjyEeHScIZgEJW-JtHVFg1sFGSuQaPqO9jdpasBqodTukE5PBI8jrzNKx6CLbqVRoZv_pV6wrZKbXwoogSqCDja3heKe0n_oWJ5EwVUlcPBhqO09FN80JqielFjRvo" />
@@ -288,6 +292,9 @@ const Insights = () => {
           </button>
         </div>
       </div>
+
+      <BottomNav onAddClick={() => setIsExpenseModalOpen(true)} />
+      <NewExpenseModal isOpen={isExpenseModalOpen} onClose={() => setIsExpenseModalOpen(false)} />
     </div>
   );
 };

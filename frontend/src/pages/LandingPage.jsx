@@ -29,7 +29,10 @@ const LandingPage = () => {
               <Link to="/register" className="bg-primary text-on-primary px-8 py-4 rounded-full font-bold text-lg hover:opacity-90 active:scale-95 transition-all shadow-lg shadow-primary/20 text-center">
                 Mulai Gratis
               </Link>
-              <button className="border-2 border-primary/20 text-primary px-8 py-4 rounded-full font-bold text-lg hover:bg-primary/5 active:scale-95 transition-all flex items-center justify-center">
+              <button
+                onClick={() => document.getElementById('fitur')?.scrollIntoView({ behavior: 'smooth' })}
+                className="border-2 border-primary/20 text-primary px-8 py-4 rounded-full font-bold text-lg hover:bg-primary/5 active:scale-95 transition-all flex items-center justify-center"
+              >
                 <span className="material-symbols-outlined mr-2">play_circle</span>
                 Lihat Demo
               </button>
@@ -136,9 +139,9 @@ const LandingPage = () => {
                   Bagi tagihan makan, belanja, atau sewa rumah secara adil. Pilih bagi rata atau kustom sesuai pesanan masing-masing dalam hitungan detik.
                 </p>
                 <div className="mt-8 pt-6 border-t border-surface-container-high opacity-0 group-hover:opacity-100 transition-opacity">
-                  <a className="text-primary font-bold inline-flex items-center" href="#">
+                  <span className="text-primary font-bold inline-flex items-center cursor-pointer">
                     Pelajari Selengkapnya <span className="material-symbols-outlined ml-2">arrow_forward</span>
-                  </a>
+                  </span>
                 </div>
               </div>
               
@@ -152,9 +155,9 @@ const LandingPage = () => {
                   Pantau siapa yang berhutang dan kepada siapa secara real-time. Notifikasi otomatis akan mengingatkan temanmu tanpa harus merasa canggung.
                 </p>
                 <div className="mt-8 pt-6 border-t border-surface-container-high opacity-0 group-hover:opacity-100 transition-opacity">
-                  <a className="text-primary font-bold inline-flex items-center" href="#">
+                  <span className="text-primary font-bold inline-flex items-center cursor-pointer">
                     Pelajari Selengkapnya <span className="material-symbols-outlined ml-2">arrow_forward</span>
-                  </a>
+                  </span>
                 </div>
               </div>
               
@@ -168,9 +171,9 @@ const LandingPage = () => {
                   Dapatkan analisis mendalam tentang gaya pengeluaranmu. AI kami memberikan prediksi saldo dan tips menabung yang dipersonalisasi.
                 </p>
                 <div className="mt-8 pt-6 border-t border-surface-container-high opacity-0 group-hover:opacity-100 transition-opacity">
-                  <a className="text-primary font-bold inline-flex items-center" href="#">
+                  <span className="text-primary font-bold inline-flex items-center cursor-pointer">
                     Pelajari Selengkapnya <span className="material-symbols-outlined ml-2">arrow_forward</span>
-                  </a>
+                  </span>
                 </div>
               </div>
             </div>
@@ -233,9 +236,9 @@ const LandingPage = () => {
                 <Link to="/register" className="bg-white text-primary px-10 py-5 rounded-full font-bold text-xl hover:bg-slate-50 transition-all active:scale-95 shadow-xl inline-block">
                   Daftar Sekarang
                 </Link>
-                <button className="bg-primary text-white border border-white/20 px-10 py-5 rounded-full font-bold text-xl hover:bg-white/10 transition-all active:scale-95">
+                <a href="mailto:sales@splitmate.app" className="bg-primary text-white border border-white/20 px-10 py-5 rounded-full font-bold text-xl hover:bg-white/10 transition-all active:scale-95 inline-block text-center">
                   Hubungi Tim Sales
-                </button>
+                </a>
               </div>
             </div>
             

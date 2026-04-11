@@ -1,12 +1,23 @@
 import React, { useState } from 'react';
 import Sidebar from '../components/layout/Sidebar';
 import TopAppBar from '../components/layout/TopAppBar';
+import BottomNav from '../components/layout/BottomNav';
+import NewExpenseModal from '../components/ui/NewExpenseModal';
 
 const Notifications = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState('all');
+
+  const tabs = [
+    { id: 'all', label: 'Semua' },
+    { id: 'unread', label: 'Belum Dibaca' },
+    { id: 'bills', label: 'Tagihan' },
+    { id: 'system', label: 'Sistem' },
+  ];
 
   return (
-    <div className="bg-surface text-on-surface min-h-screen">
+    <div className="bg-surface text-on-surface min-h-screen pb-20 md:pb-0">
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       {/* Main Content Area */}
@@ -23,10 +34,15 @@ const Notifications = () => {
               </h3>
             </div>
             <div className="flex p-1 bg-surface-container-low rounded-2xl">
-              <button className="px-6 py-2.5 bg-surface-container-lowest text-primary font-semibold rounded-xl shadow-sm transition-all text-sm font-body">Semua</button>
-              <button className="px-6 py-2.5 text-on-surface-variant hover:text-primary transition-all text-sm font-medium font-body">Belum Dibaca</button>
-              <button className="px-6 py-2.5 text-on-surface-variant hover:text-primary transition-all text-sm font-medium font-body">Tagihan</button>
-              <button className="px-6 py-2.5 text-on-surface-variant hover:text-primary transition-all text-sm font-medium font-body">Sistem</button>
+              {tabs.map(tab => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`px-6 py-2.5 rounded-xl transition-all text-sm font-body ${activeTab === tab.id ? 'bg-surface-container-lowest text-primary font-semibold shadow-sm' : 'text-on-surface-variant hover:text-primary font-medium'}`}
+                >
+                  {tab.label}
+                </button>
+              ))}
             </div>
           </div>
 
@@ -148,6 +164,9 @@ const Notifications = () => {
           </div>
         </div>
       </main>
+
+      <BottomNav onAddClick={() => setIsExpenseModalOpen(true)} />
+      <NewExpenseModal isOpen={isExpenseModalOpen} onClose={() => setIsExpenseModalOpen(false)} />
     </div>
   );
 };

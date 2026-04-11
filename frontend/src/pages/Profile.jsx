@@ -1,12 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import Sidebar from '../components/layout/Sidebar';
 import TopAppBar from '../components/layout/TopAppBar';
+import BottomNav from '../components/layout/BottomNav';
+import NewExpenseModal from '../components/ui/NewExpenseModal';
+import { AuthContext } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
+  const { logout } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
   return (
-    <div className="bg-surface text-on-surface min-h-screen">
+    <div className="bg-surface text-on-surface min-h-screen pb-20 md:pb-0">
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       {/* Main Content Area */}
@@ -109,7 +121,10 @@ const Profile = () => {
               </button>
 
               {/* Keluar */}
-              <button className="w-full flex items-center justify-between p-5 hover:bg-error-container transition-colors group text-left">
+              <button 
+                onClick={handleLogout}
+                className="w-full flex items-center justify-between p-5 hover:bg-error-container transition-colors group text-left"
+              >
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[#E24B4A] shadow-sm">
                     <span className="material-symbols-outlined">logout</span>
@@ -129,6 +144,9 @@ const Profile = () => {
           <p className="text-xs text-outline-variant mt-2 font-body">© 2026 Alex Thompson Personal Account</p>
         </footer>
       </main>
+
+      <BottomNav onAddClick={() => setIsExpenseModalOpen(true)} />
+      <NewExpenseModal isOpen={isExpenseModalOpen} onClose={() => setIsExpenseModalOpen(false)} />
     </div>
   );
 };

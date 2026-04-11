@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
 import Sidebar from '../components/layout/Sidebar';
 import TopAppBar from '../components/layout/TopAppBar';
+import BottomNav from '../components/layout/BottomNav';
 import CreateGroupModal from '../components/ui/CreateGroupModal';
+import NewExpenseModal from '../components/ui/NewExpenseModal';
 import { Link } from 'react-router-dom';
 
 const Groups = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
 
   return (
-    <div className="bg-surface text-on-surface min-h-screen">
+    <div className="bg-surface text-on-surface min-h-screen pb-20 md:pb-0">
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <TopAppBar searchPlaceholder="Search groups..." onMenuClick={() => setSidebarOpen(true)} />
       <main className="md:ml-64 pt-16 min-h-screen">
@@ -83,9 +86,15 @@ const Groups = () => {
         </div>
       </main>
 
+      <BottomNav onAddClick={() => setIsExpenseModalOpen(true)} />
+
       <CreateGroupModal 
         isOpen={isCreateModalOpen} 
         onClose={() => setIsCreateModalOpen(false)} 
+      />
+      <NewExpenseModal 
+        isOpen={isExpenseModalOpen} 
+        onClose={() => setIsExpenseModalOpen(false)} 
       />
     </div>
   );

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import Sidebar from '../components/layout/Sidebar';
 import TopAppBar from '../components/layout/TopAppBar';
+import BottomNav from '../components/layout/BottomNav';
+import NewExpenseModal from '../components/ui/NewExpenseModal';
 import SettleUpModal from '../components/ui/SettleUpModal';
 import AddFriendModal from '../components/ui/AddFriendModal';
 
@@ -9,6 +11,8 @@ const DebtTracking = () => {
   const [isAddFriendModalOpen, setIsAddFriendModalOpen] = useState(false);
   const [settleData, setSettleData] = useState({ contact: "Budi", amount: 150000 });
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState('owe');
 
   const handleSettleUp = (contact, amount) => {
     setSettleData({ contact, amount });
@@ -16,7 +20,7 @@ const DebtTracking = () => {
   };
 
   return (
-    <div className="bg-surface text-on-surface min-h-screen">
+    <div className="bg-surface text-on-surface min-h-screen pb-20 md:pb-0">
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       <TopAppBar searchPlaceholder="Search friends..." onMenuClick={() => setSidebarOpen(true)} />
@@ -79,8 +83,8 @@ const DebtTracking = () => {
               {/* Tabs & Filters Row */}
               <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                 <div className="flex bg-surface-container-low p-1.5 rounded-2xl w-fit">
-                  <button className="px-6 py-2.5 rounded-xl text-sm font-bold bg-white shadow-sm text-primary transition-all font-body">Saya Berutang (3)</button>
-                  <button className="px-6 py-2.5 rounded-xl text-sm font-semibold text-slate-500 hover:text-primary transition-all font-body">Saya Diutangi (5)</button>
+                  <button onClick={() => setActiveTab('owe')} className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all font-body ${activeTab === 'owe' ? 'bg-white shadow-sm text-primary' : 'text-slate-500 hover:text-primary'}`}>Saya Berutang (3)</button>
+                  <button onClick={() => setActiveTab('owed')} className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all font-body ${activeTab === 'owed' ? 'bg-white shadow-sm text-primary' : 'text-slate-500 hover:text-primary'}`}>Saya Diutangi (5)</button>
                 </div>
 
                 <div className="flex items-center gap-3 overflow-x-auto pb-2 lg:pb-0 scrollbar-hide">
@@ -169,8 +173,8 @@ const DebtTracking = () => {
               </div>
             </div>
 
-            {/* Contextual Split-Tray */}
-            <div className="fixed bottom-6 right-6 left-6 md:left-auto md:w-96 z-40">
+            {/* Contextual Split-Tray — hidden on mobile to avoid overlap with BottomNav */}
+            <div className="hidden md:block fixed bottom-6 right-6 md:left-auto md:w-96 z-40">
               <div className="bg-surface-variant/60 backdrop-blur-2xl p-5 rounded-[2rem] shadow-2xl border border-white/20 flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div className="bg-primary text-white w-12 h-12 rounded-2xl flex items-center justify-center">
@@ -203,6 +207,12 @@ const DebtTracking = () => {
         isOpen={isAddFriendModalOpen} 
         onClose={() => setIsAddFriendModalOpen(false)} 
       />
+      <NewExpenseModal 
+        isOpen={isExpenseModalOpen} 
+        onClose={() => setIsExpenseModalOpen(false)} 
+      />
+
+      <BottomNav onAddClick={() => setIsExpenseModalOpen(true)} />
     </div>
   );
 };

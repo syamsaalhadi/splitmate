@@ -1,9 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const SettleUpModal = ({ isOpen, onClose, defaultContact = "Budi", defaultAmount = 150000 }) => {
   const [method, setMethod] = useState('Transfer');
 
+  // Close on Escape
+  useEffect(() => {
+    const handleEsc = (e) => { if (e.key === 'Escape') onClose(); };
+    if (isOpen) document.addEventListener('keydown', handleEsc);
+    return () => document.removeEventListener('keydown', handleEsc);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
+
+  const handleSubmit = () => {
+    onClose();
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -14,7 +25,7 @@ const SettleUpModal = ({ isOpen, onClose, defaultContact = "Budi", defaultAmount
       ></div>
 
       {/* Modal Content */}
-      <div className="bg-white dark:bg-slate-900 w-full max-w-md rounded-[2rem] shadow-2xl relative z-10 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      <div className="bg-white dark:bg-slate-900 w-full max-w-md rounded-[2rem] shadow-2xl relative z-10 overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-slate-800/60 bg-surface-container-lowest">
           <div className="flex items-center gap-4">
@@ -96,6 +107,7 @@ const SettleUpModal = ({ isOpen, onClose, defaultContact = "Budi", defaultAmount
             Batal
           </button>
           <button 
+            onClick={handleSubmit}
             className="flex-[2] py-3.5 px-4 rounded-xl font-bold bg-primary text-white shadow-lg shadow-primary/30 hover:brightness-110 active:scale-[0.98] transition-all font-body text-sm flex items-center justify-center gap-2"
           >
             Tandai Lunas <span className="material-symbols-outlined text-lg">check_circle</span>
