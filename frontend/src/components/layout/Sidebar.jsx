@@ -31,9 +31,12 @@ const Sidebar = ({ isOpen = false, onClose }) => {
         </div>
 
         {/* Container matches TopAppBar height to align perfectly */}
-        <div className="h-16 flex flex-col justify-center px-4 mb-4 md:mt-0 -mt-2">
-          <h2 className="text-xl font-black text-indigo-700 dark:text-indigo-400 font-headline leading-tight">SplitMate</h2>
-          <p className="text-[10px] text-slate-500 font-semibold tracking-wide uppercase font-headline">Precision Finance</p>
+        <div className="h-16 flex items-center gap-3 px-4 mb-4 md:mt-0 -mt-2">
+          <img src="/logo.png" alt="SplitMate Logo" className="w-9 h-9 object-contain" />
+          <div>
+            <h2 className="text-xl font-black text-indigo-700 dark:text-indigo-400 font-headline leading-tight">SplitMate</h2>
+            <p className="text-[10px] text-slate-500 font-semibold tracking-wide uppercase font-headline">Precision Finance</p>
+          </div>
         </div>
 
       <nav className="flex flex-col gap-1">

@@ -62,9 +62,7 @@ const Register = () => {
           {/* Brand Identity */}
           <div className="text-center mb-10">
             <Link to="/" className="inline-block">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary-container mb-6 shadow-xl shadow-primary/10">
-                <span className="material-symbols-outlined text-white text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>account_balance_wallet</span>
-              </div>
+              <img src="/logo.png" alt="SplitMate Logo" className="w-16 h-16 object-contain mx-auto mb-6" />
             </Link>
             <h1 className="text-3xl font-extrabold tracking-tight text-primary mb-2 font-headline">SplitMate</h1>
             <p className="text-on-surface-variant font-medium font-body">Precision Fluidity in Finance.</p>
@@ -74,7 +72,7 @@ const Register = () => {
           <div className="bg-surface-container-lowest rounded-[2rem] p-8 md:p-10 shadow-[0_32px_64px_-12px_rgba(0,0,0,0.06)]">
             {success ? (
               <div className="text-center py-8">
-                <div className="w-16 h-16 rounded-full bg-secondary/10 text-secondary flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 rounded-3xl bg-secondary/10 text-secondary flex items-center justify-center mx-auto mb-4">
                   <span className="material-symbols-outlined text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
                 </div>
                 <h2 className="text-xl font-bold text-on-surface font-headline mb-2">Akun Berhasil Dibuat!</h2>
@@ -180,19 +178,10 @@ const Register = () => {
       </main>
 
       {/* Footer Component */}
-      <footer className="w-full rounded-t-3xl bg-surface-container-low mt-auto relative z-10">
-        <div className="flex flex-col md:flex-row justify-between items-center px-8 py-12 w-full max-w-7xl mx-auto space-y-6 md:space-y-0">
-          <div className="flex flex-col items-center md:items-start space-y-2">
-            <span className="text-xl font-bold text-on-surface brand-font">SplitMate</span>
-            <span className="text-on-surface-variant text-sm font-body">© 2026 SplitMate. Precision Fluidity in Finance.</span>
-          </div>
-          <div className="flex flex-wrap justify-center gap-6">
-            <span className="text-on-surface-variant text-sm font-body hover:text-primary transition-colors cursor-pointer">Privasi</span>
-            <span className="text-on-surface-variant text-sm font-body hover:text-primary transition-colors cursor-pointer">Syarat & Ketentuan</span>
-            <span className="text-on-surface-variant text-sm font-body hover:text-primary transition-colors cursor-pointer">Bantuan</span>
-          </div>
-        </div>
+      <footer className="w-full py-8 px-6 text-center relative z-10">
+        <p className="text-xs text-outline font-body">© 2026 SplitMate. Precision Fluidity in Finance.</p>
       </footer>
+
     </div>
   );
 };

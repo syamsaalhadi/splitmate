@@ -53,13 +53,14 @@ const Login = () => {
           {/* Brand Identity */}
           <div className="text-center mb-8">
             <Link to="/" className="inline-block">
+              <img src="/logo.png" alt="SplitMate Logo" className="w-16 h-16 object-contain mx-auto mb-4" />
               <h1 className="text-3xl font-extrabold tracking-tight text-primary font-headline">SplitMate</h1>
             </Link>
             <p className="text-on-surface-variant mt-2 text-sm font-body">Kelola pengeluaran bersama dengan presisi.</p>
           </div>
 
           {/* Login Card */}
-          <div className="bg-surface-container-lowest rounded-xl p-8 md:p-10 shadow-none">
+          <div className="bg-surface-container-lowest rounded-3xl p-8 md:p-10 shadow-none">
             <div className="mb-8">
               <h2 className="text-2xl font-bold text-on-surface font-headline mb-2">Masuk</h2>
               <p className="text-on-surface-variant text-sm font-body">Selamat datang kembali! Silakan masuk ke akun Anda.</p>

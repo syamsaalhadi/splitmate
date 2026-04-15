@@ -35,14 +35,9 @@ const Navbar = () => {
           {/* Logo */}
           <Link
             to="/"
-            className="flex items-center justify-center w-11 h-11 rounded-full bg-primary text-on-primary hover:opacity-90 transition-all duration-300 shrink-0"
+            className="flex items-center justify-center w-11 h-11 hover:opacity-90 transition-all duration-300 shrink-0"
           >
-            <span
-              className="material-symbols-outlined text-xl"
-              style={{ fontVariationSettings: "'FILL' 1" }}
-            >
-              account_balance_wallet
-            </span>
+            <img src="/logo.png" alt="SplitMate Logo" className="w-full h-full object-contain" />
           </Link>
 
           {/* Nav Links (Desktop) */}

@@ -5,7 +5,10 @@ const Footer = () => {
     <footer className="w-full rounded-t-[3rem] bg-slate-50 dark:bg-slate-900 mt-20">
       <div className="flex flex-col md:flex-row justify-between items-center px-8 py-12 w-full max-w-7xl mx-auto">
         <div className="mb-8 md:mb-0 space-y-4 text-center md:text-left">
-          <div className="text-xl font-bold text-slate-900 dark:text-white font-headline">SplitMate</div>
+          <div className="flex items-center gap-2">
+            <img src="/logo.png" alt="SplitMate Logo" className="w-8 h-8 object-contain" />
+            <span className="text-xl font-bold text-slate-900 dark:text-white font-headline">SplitMate</span>
+          </div>
           <p className="text-slate-500 text-sm max-w-xs font-body">
             Precision Fluidity in Finance. Solusi modern untuk generasi baru.
           </p>

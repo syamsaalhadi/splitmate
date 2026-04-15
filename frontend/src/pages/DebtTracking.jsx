@@ -24,7 +24,7 @@ const DebtTracking = () => {
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       <TopAppBar searchPlaceholder="Search friends..." onMenuClick={() => setSidebarOpen(true)} />
-      {/* Main Content Canvas */}
+
       <main className="pt-24 pb-20 md:ml-64 px-6 min-h-screen">
         <div className="max-w-5xl mx-auto flex flex-col gap-8">
 
