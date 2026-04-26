@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
+import api from '../services/api';
 
 const Register = () => {
   const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
   const [form, setForm] = useState({ fullname: '', email: '', password: '', confirm_password: '' });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
@@ -40,12 +43,21 @@ const Register = () => {
     if (!validate()) return;
 
     setLoading(true);
-    // Simulate API call — replace with real API later
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      const res = await api.post('/auth/register', {
+        name: form.fullname,
+        email: form.email,
+        password: form.password,
+      });
+      login(res.data.access_token, res.data.user);
       setSuccess(true);
-      setTimeout(() => navigate('/login'), 1500);
-    }, 800);
+      setTimeout(() => navigate('/dashboard'), 1500);
+    } catch (err) {
+      const msg = err.response?.data?.detail || 'Registrasi gagal, coba lagi';
+      setErrors({ email: msg });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

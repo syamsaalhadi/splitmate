@@ -9,8 +9,12 @@ import { useNavigate } from 'react-router-dom';
 const Profile = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
-  const { logout } = useContext(AuthContext);
+  const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
+
+  const memberSince = user?.created_at
+    ? new Date(user.created_at).toLocaleDateString('id-ID', { month: 'short', year: 'numeric' })
+    : '';
 
   const handleLogout = () => {
     logout();
@@ -29,33 +33,39 @@ const Profile = () => {
           <div className="relative flex flex-col items-center mb-16 text-center">
             {/* Large Centered User Avatar */}
             <div className="relative mb-6">
-              <div className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-primary-container p-1 ring-4 ring-primary/10">
-                <img alt="Alex Thompson" className="w-full h-full rounded-full object-cover shadow-xl" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUIGjw1pagkErh0psyRo28u0c9ZStW52dczHLoPHO2gxJCXADK0IDtpwDTZe_6ke2PNfuB2xBJvQlsQhb1nV7d1Ukwk7_wrHv8c1A7VU5T6djQkwbmOJ-0MEjMtftQB_5r-dep3yZSGTZuzVZXLbtxjqyfndEAzuKBfZCr7zJ9u0QSXVVVltupnSJg0lPaCipJjKf3AyIUS9mihCIjZU0MihQhq_9HZHUd8FBYOPyrv6X_sAieWvF5GMDkptL3KfvE9Jh82exy9Zs" />
+              <div className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-primary-container p-1 ring-4 ring-primary/10 flex items-center justify-center">
+                {user?.avatar_url ? (
+                  <img alt={user.name} className="w-full h-full rounded-full object-cover shadow-xl" src={user.avatar_url} />
+                ) : (
+                  <span className="text-5xl font-extrabold text-primary font-headline">
+                    {user?.name?.[0]?.toUpperCase() || '?'}
+                  </span>
+                )}
               </div>
               <button className="absolute bottom-2 right-2 p-2 bg-secondary text-on-secondary rounded-full shadow-lg border-4 border-surface hover:scale-110 transition-transform">
                 <span className="material-symbols-outlined text-sm">edit</span>
               </button>
             </div>
-            <h2 className="text-3xl md:text-4xl font-extrabold text-on-surface mb-2 tracking-tight font-headline">Alex Thompson</h2>
-            <p className="text-on-surface-variant font-medium mb-1 font-body">alex.thompson@fluidledger.com</p>
-            <p className="text-sm text-outline px-4 py-1 bg-surface-container-high rounded-full font-body">Member since Oct 2023</p>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-on-surface mb-2 tracking-tight font-headline">{user?.name || '—'}</h2>
+            <p className="text-on-surface-variant font-medium mb-1 font-body">{user?.email || '—'}</p>
+            {memberSince && <p className="text-sm text-outline px-4 py-1 bg-surface-container-high rounded-full font-body">Member sejak {memberSince}</p>}
           </div>
 
           {/* Stats Bento Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
             <div className="bg-surface-container-low p-8 rounded-xl flex flex-col items-center justify-center text-center transition-all hover:bg-surface-container-high group">
               <span className="material-symbols-outlined text-primary mb-3 text-3xl opacity-60 group-hover:opacity-100 transition-opacity">groups</span>
-              <span className="text-3xl font-black text-on-surface mb-1 font-headline">12</span>
+              <span className="text-3xl font-black text-on-surface mb-1 font-headline">—</span>
               <span className="text-sm font-bold text-outline-variant uppercase tracking-widest font-body">Groups Joined</span>
             </div>
             <div className="bg-surface-container-low p-8 rounded-xl flex flex-col items-center justify-center text-center transition-all hover:bg-surface-container-high group">
               <span className="material-symbols-outlined text-secondary mb-3 text-3xl opacity-60 group-hover:opacity-100 transition-opacity">swap_horiz</span>
-              <span className="text-3xl font-black text-on-surface mb-1 font-headline">156</span>
+              <span className="text-3xl font-black text-on-surface mb-1 font-headline">—</span>
               <span className="text-sm font-bold text-outline-variant uppercase tracking-widest font-body">Transactions</span>
             </div>
             <div className="bg-surface-container-low p-8 rounded-xl flex flex-col items-center justify-center text-center transition-all hover:bg-surface-container-high group border-2 border-transparent hover:border-secondary-container">
               <span className="material-symbols-outlined text-on-tertiary-fixed-variant mb-3 text-3xl opacity-60 group-hover:opacity-100 transition-opacity">trending_up</span>
-              <span className="text-3xl font-black text-on-surface mb-1 font-headline">850</span>
+              <span className="text-3xl font-black text-on-surface mb-1 font-headline">—</span>
               <span className="text-sm font-bold text-outline-variant uppercase tracking-widest font-body">Financial Score</span>
             </div>
           </div>
@@ -140,8 +150,8 @@ const Profile = () => {
 
         {/* Footer Accent */}
         <footer className="mt-20 py-8 px-6 border-t border-surface-container-high text-center">
-          <p className="text-xs text-outline uppercase tracking-[0.2em] font-bold font-body">SplitMate x The Fluid Ledger</p>
-          <p className="text-xs text-outline-variant mt-2 font-body">© 2026 Alex Thompson Personal Account</p>
+          <p className="text-xs text-outline uppercase tracking-[0.2em] font-bold font-body">SplitMate</p>
+          <p className="text-xs text-outline-variant mt-2 font-body">© 2026 {user?.name || 'SplitMate'}</p>
         </footer>
       </main>
 

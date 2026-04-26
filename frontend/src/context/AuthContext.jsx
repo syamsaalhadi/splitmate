@@ -9,17 +9,21 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // If there's a token, verify it or fetch user details
     if (token) {
       localStorage.setItem('token', token);
-      // Optional: fetch user info API here to validate token
-      // api.get('/users/me').then(res => setUser(res.data)).catch(() => logout());
-      setUser({ name: "Alex Thompson", email: "alex@example.com" }); // Mock user
+      api.get('/users/me')
+        .then(res => setUser(res.data))
+        .catch(() => {
+          localStorage.removeItem('token');
+          setToken(null);
+          setUser(null);
+        })
+        .finally(() => setLoading(false));
     } else {
       localStorage.removeItem('token');
       setUser(null);
+      setLoading(false);
     }
-    setLoading(false);
   }, [token]);
 
   const login = (newToken, userData) => {

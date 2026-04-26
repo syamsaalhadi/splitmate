@@ -10,7 +10,7 @@ import GroupDetail from './pages/GroupDetail';
 import Notifications from './pages/Notifications';
 import Profile from './pages/Profile';
 import NotFound from './pages/NotFound';
-// import ProtectedRoute from './components/layout/ProtectedRoute'; // TODO: Re-enable saat integrasi backend
+import ProtectedRoute from './components/layout/ProtectedRoute';
 
 function App() {
   return (
@@ -21,14 +21,14 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
-        {/* Dashboard Routes — tambahkan <ProtectedRoute> saat backend siap */}
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/insights" element={<Insights />} />
-        <Route path="/groups" element={<Groups />} />
-        <Route path="/groups/:id" element={<GroupDetail />} />
-        <Route path="/friends" element={<DebtTracking />} />
-        <Route path="/activity" element={<Notifications />} />
-        <Route path="/settings" element={<Profile />} />
+        {/* Dashboard Routes — protected */}
+        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        <Route path="/insights" element={<ProtectedRoute><Insights /></ProtectedRoute>} />
+        <Route path="/groups" element={<ProtectedRoute><Groups /></ProtectedRoute>} />
+        <Route path="/groups/:id" element={<ProtectedRoute><GroupDetail /></ProtectedRoute>} />
+        <Route path="/friends" element={<ProtectedRoute><DebtTracking /></ProtectedRoute>} />
+        <Route path="/activity" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
+        <Route path="/settings" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
 
         {/* 404 Catch-All */}
         <Route path="*" element={<NotFound />} />

@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import api from '../../services/api';
 
-const SettleUpModal = ({ isOpen, onClose, defaultContact = "Budi", defaultAmount = 150000 }) => {
+const SettleUpModal = ({ isOpen, onClose, defaultContact = "Budi", defaultAmount = 150000, toUserId, groupId, onSuccess }) => {
   const [method, setMethod] = useState('Transfer');
+  const [amount, setAmount] = useState(defaultAmount);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  useEffect(() => { setAmount(defaultAmount); }, [defaultAmount]);
 
   // Close on Escape
   useEffect(() => {
@@ -12,8 +18,24 @@ const SettleUpModal = ({ isOpen, onClose, defaultContact = "Budi", defaultAmount
 
   if (!isOpen) return null;
 
-  const handleSubmit = () => {
-    onClose();
+  const handleSubmit = async () => {
+    if (!toUserId || !groupId) { setError('Data tidak lengkap'); return; }
+    setLoading(true);
+    setError('');
+    try {
+      await api.post('/settlements', {
+        to_user_id: toUserId,
+        group_id: groupId,
+        amount: Number(String(amount).replace(/\./g, '')),
+        notes: method,
+      });
+      onSuccess?.();
+      onClose();
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Gagal melakukan pelunasan');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -53,9 +75,10 @@ const SettleUpModal = ({ isOpen, onClose, defaultContact = "Budi", defaultAmount
             <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest font-body mb-2">Total Dibayar</p>
             <div className="flex justify-center items-center gap-1 group">
               <span className="text-xl font-bold text-primary font-headline">Rp</span>
-              <input 
-                type="text" 
-                defaultValue={defaultAmount.toLocaleString('id-ID')}
+              <input
+                type="number"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
                 className="bg-transparent text-4xl font-black text-on-surface text-center w-48 focus:outline-none focus:ring-0 focus:border-b-2 focus:border-primary font-headline"
               />
               <span className="material-symbols-outlined text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity">edit</span>
@@ -99,19 +122,23 @@ const SettleUpModal = ({ isOpen, onClose, defaultContact = "Budi", defaultAmount
         </div>
 
         {/* Footer */}
-        <div className="p-6 md:px-8 bg-slate-50 dark:bg-slate-900/80 border-t border-slate-100 dark:border-slate-800/60 flex gap-3">
-          <button 
-            onClick={onClose}
-            className="flex-1 py-3.5 px-4 rounded-xl font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-200/50 dark:hover:bg-slate-800 transition-colors font-body text-sm"
-          >
-            Batal
-          </button>
-          <button 
-            onClick={handleSubmit}
-            className="flex-[2] py-3.5 px-4 rounded-xl font-bold bg-primary text-white shadow-lg shadow-primary/30 hover:brightness-110 active:scale-[0.98] transition-all font-body text-sm flex items-center justify-center gap-2"
-          >
-            Tandai Lunas <span className="material-symbols-outlined text-lg">check_circle</span>
-          </button>
+        <div className="p-6 md:px-8 bg-slate-50 dark:bg-slate-900/80 border-t border-slate-100 dark:border-slate-800/60 flex flex-col gap-3">
+          {error && <p className="text-error text-xs font-medium text-center font-body">{error}</p>}
+          <div className="flex gap-3">
+            <button
+              onClick={onClose}
+              className="flex-1 py-3.5 px-4 rounded-xl font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-200/50 dark:hover:bg-slate-800 transition-colors font-body text-sm"
+            >
+              Batal
+            </button>
+            <button
+              onClick={handleSubmit}
+              disabled={loading}
+              className="flex-[2] py-3.5 px-4 rounded-xl font-bold bg-primary text-white shadow-lg shadow-primary/30 hover:brightness-110 active:scale-[0.98] transition-all font-body text-sm flex items-center justify-center gap-2 disabled:opacity-60"
+            >
+              {loading ? <span className="material-symbols-outlined text-lg animate-spin">progress_activity</span> : <>Tandai Lunas <span className="material-symbols-outlined text-lg">check_circle</span></>}
+            </button>
+          </div>
         </div>
       </div>
     </div>

@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import api from '../services/api';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -30,12 +31,16 @@ const Login = () => {
     if (!validate()) return;
 
     setLoading(true);
-    // Simulate API call — replace with real API later
-    setTimeout(() => {
-      login('mock-jwt-token', { name: 'Alex Thompson', email: form.email });
-      setLoading(false);
+    try {
+      const res = await api.post('/auth/login', { email: form.email, password: form.password });
+      login(res.data.access_token, res.data.user);
       navigate('/dashboard');
-    }, 800);
+    } catch (err) {
+      const msg = err.response?.data?.detail || 'Email atau password salah';
+      setErrors({ password: msg });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
