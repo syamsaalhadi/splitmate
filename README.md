@@ -27,7 +27,6 @@ terstruktur, transparan, dan cerdas menggunakan kecerdasan buatan.
 | Syamsa Al Hadi | Full-Stack Web Developer (Frontend Lead) |
 | Putra Indika Malik Hakim | Full-Stack Web Developer (Backend Lead) |
 | Angelika Revalina Rismawati | Data Scientist (Data Wrangling & EDA) |
-| Abidurrohman | Data Scientist (Visualisasi & Dashboard) |
 | Azza Kamila Al Haq | AI Engineer (Model Klasifikasi) |
 | Mamluatul 'Azazah | AI Engineer (Model Prediksi) |
 
