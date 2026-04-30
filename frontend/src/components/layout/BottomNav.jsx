@@ -9,7 +9,7 @@ const BottomNav = ({ onAddClick }) => {
     { path: '/groups', icon: 'group', label: 'Groups' },
     null, // placeholder for center FAB
     { path: '/insights', icon: 'insights', label: 'Insights' },
-    { path: '/settings', icon: 'person', label: 'Profile' },
+    { path: '/profile', icon: 'person', label: 'Profile' },
   ];
 
   return (

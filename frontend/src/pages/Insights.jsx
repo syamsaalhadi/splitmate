@@ -228,8 +228,8 @@ const Insights = () => {
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <img alt="Avatar" className="w-8 h-8 rounded-full border-2 border-white/20" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnolPy9jAyrl5xyu5R9XK-jXJOvRYpDOiu0ikfwJ2boZBrINQxkxh9jyFfPmMPHrjkw4vCa5ld6tsrvCFmJMGPrZsN0qgnIcqAO2OwbOQU4LN9tpyuViMS4g7Cq_SuO_UNinLvCseGTbMpSu0PGWsnl1RMJVed3lyUekIUxyWqtIdySHTyc6Ol1fuJRRCQ4W3S2HZT1C4i133YZooy-g7e_RGEOSRrhyaKxNFmFH_OqN636aiBd2YcQzOmd-KFE4i0dx42OUXRdmM" />
-                    <span className="text-sm font-medium font-body">Sarah</span>
+                    <div className="w-8 h-8 rounded-full border-2 border-white/20 bg-white/20 flex items-center justify-center text-xs font-bold">A</div>
+                    <span className="text-sm font-medium font-body">Anggota</span>
                   </div>
                   <span className="text-xs font-bold text-secondary-container font-body">Lunas</span>
                 </div>

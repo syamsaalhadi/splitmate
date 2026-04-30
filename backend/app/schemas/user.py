@@ -36,6 +36,16 @@ class UserResponse(BaseModel):
     class Config:
         from_attributes = True
 
+class UserUpdate(BaseModel):
+    name: str
+
+    @field_validator('name')
+    @classmethod
+    def name_not_empty(cls, v):
+        if not v.strip():
+            raise ValueError('Nama tidak boleh kosong')
+        return v.strip()
+
 class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"

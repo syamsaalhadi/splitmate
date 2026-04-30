@@ -9,6 +9,7 @@ import Groups from './pages/Groups';
 import GroupDetail from './pages/GroupDetail';
 import Notifications from './pages/Notifications';
 import Profile from './pages/Profile';
+import Settings from './pages/Settings';
 import NotFound from './pages/NotFound';
 import ProtectedRoute from './components/layout/ProtectedRoute';
 
@@ -28,7 +29,8 @@ function App() {
         <Route path="/groups/:id" element={<ProtectedRoute><GroupDetail /></ProtectedRoute>} />
         <Route path="/friends" element={<ProtectedRoute><DebtTracking /></ProtectedRoute>} />
         <Route path="/activity" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
-        <Route path="/settings" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+        <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+        <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
 
         {/* 404 Catch-All */}
         <Route path="*" element={<NotFound />} />

@@ -1,158 +1,93 @@
 import React, { useState, useContext } from 'react';
+import { Link } from 'react-router-dom';
 import Sidebar from '../components/layout/Sidebar';
 import TopAppBar from '../components/layout/TopAppBar';
 import BottomNav from '../components/layout/BottomNav';
 import NewExpenseModal from '../components/ui/NewExpenseModal';
 import { AuthContext } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
-  const { user, logout } = useContext(AuthContext);
-  const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
 
   const memberSince = user?.created_at
-    ? new Date(user.created_at).toLocaleDateString('id-ID', { month: 'short', year: 'numeric' })
+    ? new Date(user.created_at).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })
     : '';
-
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
 
   return (
     <div className="bg-surface text-on-surface min-h-screen pb-20 md:pb-0">
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      {/* Main Content Area */}
       <main className="md:ml-64 min-h-screen">
         <TopAppBar searchPlaceholder="Search accounts..." onMenuClick={() => setSidebarOpen(true)} />
-        {/* Profile Hero Section */}
-        <section className="max-w-5xl mx-auto px-6 pt-24 pb-12">
-          <div className="relative flex flex-col items-center mb-16 text-center">
-            {/* Large Centered User Avatar */}
-            <div className="relative mb-6">
-              <div className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-primary-container p-1 ring-4 ring-primary/10 flex items-center justify-center">
+
+        <section className="max-w-3xl mx-auto px-6 pt-24 pb-12">
+          {/* Hero Avatar */}
+          <div className="flex flex-col items-center text-center mb-10">
+            <div className="relative mb-5">
+              <div className="w-32 h-32 rounded-full bg-primary-container ring-4 ring-primary/10 flex items-center justify-center overflow-hidden">
                 {user?.avatar_url ? (
-                  <img alt={user.name} className="w-full h-full rounded-full object-cover shadow-xl" src={user.avatar_url} />
+                  <img alt={user.name} className="w-full h-full object-cover" src={user.avatar_url} />
                 ) : (
                   <span className="text-5xl font-extrabold text-primary font-headline">
                     {user?.name?.[0]?.toUpperCase() || '?'}
                   </span>
                 )}
               </div>
-              <button className="absolute bottom-2 right-2 p-2 bg-secondary text-on-secondary rounded-full shadow-lg border-4 border-surface hover:scale-110 transition-transform">
-                <span className="material-symbols-outlined text-sm">edit</span>
-              </button>
-            </div>
-            <h2 className="text-3xl md:text-4xl font-extrabold text-on-surface mb-2 tracking-tight font-headline">{user?.name || '—'}</h2>
-            <p className="text-on-surface-variant font-medium mb-1 font-body">{user?.email || '—'}</p>
-            {memberSince && <p className="text-sm text-outline px-4 py-1 bg-surface-container-high rounded-full font-body">Member sejak {memberSince}</p>}
-          </div>
-
-          {/* Stats Bento Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-            <div className="bg-surface-container-low p-8 rounded-xl flex flex-col items-center justify-center text-center transition-all hover:bg-surface-container-high group">
-              <span className="material-symbols-outlined text-primary mb-3 text-3xl opacity-60 group-hover:opacity-100 transition-opacity">groups</span>
-              <span className="text-3xl font-black text-on-surface mb-1 font-headline">—</span>
-              <span className="text-sm font-bold text-outline-variant uppercase tracking-widest font-body">Groups Joined</span>
-            </div>
-            <div className="bg-surface-container-low p-8 rounded-xl flex flex-col items-center justify-center text-center transition-all hover:bg-surface-container-high group">
-              <span className="material-symbols-outlined text-secondary mb-3 text-3xl opacity-60 group-hover:opacity-100 transition-opacity">swap_horiz</span>
-              <span className="text-3xl font-black text-on-surface mb-1 font-headline">—</span>
-              <span className="text-sm font-bold text-outline-variant uppercase tracking-widest font-body">Transactions</span>
-            </div>
-            <div className="bg-surface-container-low p-8 rounded-xl flex flex-col items-center justify-center text-center transition-all hover:bg-surface-container-high group border-2 border-transparent hover:border-secondary-container">
-              <span className="material-symbols-outlined text-on-tertiary-fixed-variant mb-3 text-3xl opacity-60 group-hover:opacity-100 transition-opacity">trending_up</span>
-              <span className="text-3xl font-black text-on-surface mb-1 font-headline">—</span>
-              <span className="text-sm font-bold text-outline-variant uppercase tracking-widest font-body">Financial Score</span>
-            </div>
-          </div>
-
-          {/* Settings Menu List */}
-          <div className="max-w-2xl mx-auto">
-            <h3 className="text-lg font-bold text-on-surface mb-6 px-2 font-headline">Account Settings</h3>
-            <div className="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden divide-y divide-surface-container">
-
-              {/* Edit Profile */}
-              <button className="w-full flex items-center justify-between p-5 hover:bg-surface-container transition-colors group text-left">
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-primary-container/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-all">
-                    <span className="material-symbols-outlined">person</span>
-                  </div>
-                  <span className="font-bold text-on-surface font-body">Edit Profil</span>
-                </div>
-                <span className="material-symbols-outlined text-outline-variant">chevron_right</span>
-              </button>
-
-              {/* Notifikasi */}
-              <button className="w-full flex items-center justify-between p-5 hover:bg-surface-container transition-colors group text-left">
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-secondary-container/20 flex items-center justify-center text-secondary group-hover:bg-secondary group-hover:text-on-secondary transition-all">
-                    <span className="material-symbols-outlined">notifications</span>
-                  </div>
-                  <span className="font-bold text-on-surface font-body">Notifikasi</span>
-                </div>
-                <span className="material-symbols-outlined text-outline-variant">chevron_right</span>
-              </button>
-
-              {/* Keamanan */}
-              <button className="w-full flex items-center justify-between p-5 hover:bg-surface-container transition-colors group text-left">
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-on-surface-variant group-hover:bg-on-background group-hover:text-surface transition-all">
-                    <span className="material-symbols-outlined">lock</span>
-                  </div>
-                  <span className="font-bold text-on-surface font-body">Keamanan</span>
-                </div>
-                <span className="material-symbols-outlined text-outline-variant">chevron_right</span>
-              </button>
-
-              {/* Bantuan */}
-              <button className="w-full flex items-center justify-between p-5 hover:bg-surface-container transition-colors group text-left">
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-tertiary-fixed flex items-center justify-center text-on-tertiary-fixed group-hover:bg-tertiary group-hover:text-on-tertiary transition-all">
-                    <span className="material-symbols-outlined">help</span>
-                  </div>
-                  <span className="font-bold text-on-surface font-body">Bantuan</span>
-                </div>
-                <span className="material-symbols-outlined text-outline-variant">chevron_right</span>
-              </button>
-
-              {/* Tentang Aplikasi */}
-              <button className="w-full flex items-center justify-between p-5 hover:bg-surface-container transition-colors group text-left">
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center text-on-primary-fixed-variant group-hover:bg-primary-container group-hover:text-on-primary-container transition-all">
-                    <span className="material-symbols-outlined">info</span>
-                  </div>
-                  <span className="font-bold text-on-surface font-body">Tentang Aplikasi</span>
-                </div>
-                <span className="material-symbols-outlined text-outline-variant">chevron_right</span>
-              </button>
-
-              {/* Keluar */}
-              <button 
-                onClick={handleLogout}
-                className="w-full flex items-center justify-between p-5 hover:bg-error-container transition-colors group text-left"
+              <Link
+                to="/settings"
+                className="absolute bottom-1 right-1 p-2 bg-secondary text-on-secondary rounded-full shadow-lg border-4 border-surface hover:scale-110 transition-transform"
               >
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[#E24B4A] shadow-sm">
-                    <span className="material-symbols-outlined">logout</span>
-                  </div>
-                  <span className="font-bold text-[#E24B4A] font-body">Keluar</span>
-                </div>
-                <span className="material-symbols-outlined text-[#E24B4A] opacity-50">chevron_right</span>
-              </button>
-
+                <span className="material-symbols-outlined text-sm">edit</span>
+              </Link>
             </div>
+            <h2 className="text-3xl font-extrabold text-on-surface tracking-tight font-headline mb-1">{user?.name || '—'}</h2>
+            <p className="text-on-surface-variant font-medium font-body mb-2">{user?.email || '—'}</p>
+            {memberSince && (
+              <span className="text-xs text-outline px-4 py-1.5 bg-surface-container-high rounded-full font-body">
+                Member sejak {memberSince}
+              </span>
+            )}
+          </div>
+
+          {/* Stats Grid */}
+          <div className="grid grid-cols-3 gap-4 mb-10">
+            {[
+              { icon: 'groups', label: 'Groups Joined', color: 'text-primary' },
+              { icon: 'swap_horiz', label: 'Transactions', color: 'text-secondary' },
+              { icon: 'trending_up', label: 'Financial Score', color: 'text-tertiary' },
+            ].map(({ icon, label, color }) => (
+              <div key={label} className="bg-surface-container-low p-6 rounded-2xl flex flex-col items-center justify-center text-center hover:bg-surface-container-high transition-colors group">
+                <span className={`material-symbols-outlined ${color} mb-2 text-2xl opacity-60 group-hover:opacity-100 transition-opacity`}>{icon}</span>
+                <span className="text-2xl font-black text-on-surface font-headline">—</span>
+                <span className="text-[10px] font-bold text-outline-variant uppercase tracking-widest font-body mt-1">{label}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Quick Actions */}
+          <div className="bg-surface-container-lowest rounded-2xl overflow-hidden divide-y divide-surface-container shadow-sm">
+            <Link to="/settings" className="flex items-center justify-between p-5 hover:bg-surface-container transition-colors group">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-all">
+                  <span className="material-symbols-outlined">settings</span>
+                </div>
+                <span className="font-semibold text-on-surface font-body">Pengaturan Akun</span>
+              </div>
+              <span className="material-symbols-outlined text-outline-variant">chevron_right</span>
+            </Link>
+            <Link to="/activity" className="flex items-center justify-between p-5 hover:bg-surface-container transition-colors group">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center text-secondary group-hover:bg-secondary group-hover:text-on-secondary transition-all">
+                  <span className="material-symbols-outlined">notifications</span>
+                </div>
+                <span className="font-semibold text-on-surface font-body">Aktivitas</span>
+              </div>
+              <span className="material-symbols-outlined text-outline-variant">chevron_right</span>
+            </Link>
           </div>
         </section>
-
-        {/* Footer Accent */}
-        <footer className="mt-20 py-8 px-6 border-t border-surface-container-high text-center">
-          <p className="text-xs text-outline uppercase tracking-[0.2em] font-bold font-body">SplitMate</p>
-          <p className="text-xs text-outline-variant mt-2 font-body">© 2026 {user?.name || 'SplitMate'}</p>
-        </footer>
       </main>
 
       <BottomNav onAddClick={() => setIsExpenseModalOpen(true)} />
