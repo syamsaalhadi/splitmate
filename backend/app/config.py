@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     jwt_secret_key: str
     jwt_algorithm: str = "HS256"
     jwt_expire_minutes: int = 1440
+    cookie_secure: bool = False  # Set True di production (HTTPS)
 
     class Config:
         env_file = ".env"

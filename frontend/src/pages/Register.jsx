@@ -21,8 +21,8 @@ const Register = () => {
     }
     if (!form.password) {
       newErrors.password = 'Kata sandi wajib diisi';
-    } else if (form.password.length < 6) {
-      newErrors.password = 'Minimal 6 karakter';
+    } else if (form.password.length < 8) {
+      newErrors.password = 'Minimal 8 karakter';
     }
     if (!form.confirm_password) {
       newErrors.confirm_password = 'Konfirmasi kata sandi wajib diisi';
@@ -49,7 +49,7 @@ const Register = () => {
         email: form.email,
         password: form.password,
       });
-      login(res.data.access_token, res.data.user);
+      login(res.data.user);
       setSuccess(true);
       setTimeout(() => navigate('/dashboard'), 1500);
     } catch (err) {

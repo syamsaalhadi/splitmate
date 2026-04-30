@@ -1,20 +1,22 @@
-from fastapi import Depends, HTTPException, status
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi import Cookie, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from uuid import UUID
 from app.database import get_db
 from app.core.security import decode_access_token
 from app.models.user import User
 
-bearer_scheme = HTTPBearer()
 
 def get_current_user(
-    credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme),
+    access_token: str = Cookie(default=None),
     db: Session = Depends(get_db)
 ) -> User:
-    token = credentials.credentials
-    user_id = decode_access_token(token)
+    if not access_token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Sesi tidak ditemukan, silakan login kembali"
+        )
 
+    user_id = decode_access_token(access_token)
     if not user_id:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -22,7 +24,6 @@ def get_current_user(
         )
 
     user = db.query(User).filter(User.id == UUID(user_id)).first()
-
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

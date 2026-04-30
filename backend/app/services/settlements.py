@@ -16,6 +16,9 @@ def create_settlement(db: Session, payload: SettlementCreate, current_user_id: U
     if not to_user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User tujuan tidak ditemukan")
 
+    # Validasi to_user harus anggota grup yang sama
+    _assert_member(db, payload.group_id, payload.to_user_id)
+
     # Tandai expense_splits yang relevan sebagai settled
     # Cari splits: current_user berutang ke to_user di grup ini
     splits = (
@@ -72,12 +75,18 @@ def get_group_settlements(db: Session, group_id: UUID, current_user_id: UUID) ->
         .all()
     )
 
-    result = []
+    # Kumpulkan semua user_id lalu fetch sekaligus
+    user_ids = set()
     for s in settlements:
-        from_user = db.query(User).filter(User.id == s.from_user).first()
-        to_user = db.query(User).filter(User.id == s.to_user).first()
-        result.append(_format_settlement(s, from_user, to_user))
-    return result
+        user_ids.add(s.from_user)
+        user_ids.add(s.to_user)
+    users = db.query(User).filter(User.id.in_(user_ids)).all()
+    user_map = {u.id: u for u in users}
+
+    return [
+        _format_settlement(s, user_map.get(s.from_user), user_map.get(s.to_user))
+        for s in settlements
+    ]
 
 
 def _format_settlement(s: Settlement, from_user: User, to_user: User) -> dict:

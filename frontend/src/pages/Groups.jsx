@@ -24,7 +24,7 @@ const Groups = () => {
       const res = await api.get('/groups');
       setGroups(res.data);
     } catch (e) {
-      console.error(e);
+      if (import.meta.env.DEV) console.error(e);
     } finally {
       setLoading(false);
     }

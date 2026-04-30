@@ -5,40 +5,29 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem('token') || null);
   const [loading, setLoading] = useState(true);
 
+  // Restore session dari cookie saat app dimuat
   useEffect(() => {
-    if (token) {
-      localStorage.setItem('token', token);
-      api.get('/users/me')
-        .then(res => setUser(res.data))
-        .catch(() => {
-          localStorage.removeItem('token');
-          setToken(null);
-          setUser(null);
-        })
-        .finally(() => setLoading(false));
-    } else {
-      localStorage.removeItem('token');
-      setUser(null);
-      setLoading(false);
-    }
-  }, [token]);
+    api.get('/users/me')
+      .then(res => setUser(res.data))
+      .catch(() => setUser(null))
+      .finally(() => setLoading(false));
+  }, []);
 
-  const login = (newToken, userData) => {
-    setToken(newToken);
+  const login = (userData) => {
     setUser(userData);
   };
 
-  const logout = () => {
-    setToken(null);
+  const logout = async () => {
+    try {
+      await api.post('/auth/logout');
+    } catch (_) {}
     setUser(null);
-    localStorage.removeItem('token');
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout, loading }}>
+    <AuthContext.Provider value={{ user, login, logout, loading }}>
       {!loading && children}
     </AuthContext.Provider>
   );

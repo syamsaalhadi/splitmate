@@ -22,7 +22,7 @@ const DebtTracking = () => {
       const res = await api.get('/users/me/debts');
       setDebts(res.data);
     } catch (e) {
-      console.error(e);
+      if (import.meta.env.DEV) console.error(e);
     } finally {
       setLoading(false);
     }

@@ -19,8 +19,8 @@ const Login = () => {
     }
     if (!form.password) {
       newErrors.password = 'Kata sandi wajib diisi';
-    } else if (form.password.length < 6) {
-      newErrors.password = 'Minimal 6 karakter';
+    } else if (form.password.length < 8) {
+      newErrors.password = 'Minimal 8 karakter';
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -33,7 +33,7 @@ const Login = () => {
     setLoading(true);
     try {
       const res = await api.post('/auth/login', { email: form.email, password: form.password });
-      login(res.data.access_token, res.data.user);
+      login(res.data.user);  // cookie di-set otomatis oleh backend
       navigate('/dashboard');
     } catch (err) {
       const msg = err.response?.data?.detail || 'Email atau password salah';

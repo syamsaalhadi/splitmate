@@ -1,7 +1,7 @@
 from uuid import UUID
 from decimal import Decimal
 from datetime import date
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from fastapi import HTTPException, status
 from app.models.group import GroupMember
 from app.models.expense import Expense, ExpenseSplit
@@ -23,6 +23,10 @@ def create_expense(db: Session, group_id: UUID, payload: ExpenseCreate, current_
     _assert_member(db, group_id, current_user_id)
 
     paid_by_id = payload.paid_by if payload.paid_by else current_user_id
+
+    # Validasi paid_by harus anggota grup yang sama
+    _assert_member(db, group_id, paid_by_id)
+
     payer = db.query(User).filter(User.id == paid_by_id).first()
     if not payer:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User pembayar tidak ditemukan")
@@ -70,13 +74,35 @@ def create_expense(db: Session, group_id: UUID, payload: ExpenseCreate, current_
 
     db.commit()
     db.refresh(expense)
-    return _build_expense_response(db, expense)
+    return _build_expense_response(expense)
 
 
-def get_group_expenses(db: Session, group_id: UUID, current_user_id: UUID) -> list:
+def get_group_expenses(db: Session, group_id: UUID, current_user_id: UUID, limit: int = 20, offset: int = 0) -> dict:
     _assert_member(db, group_id, current_user_id)
-    expenses = db.query(Expense).filter(Expense.group_id == group_id).order_by(Expense.date.desc()).all()
-    return [_build_expense_response(db, e) for e in expenses]
+
+    # Single query dengan eager load splits + payer
+    expenses = (
+        db.query(Expense)
+        .options(
+            joinedload(Expense.splits),
+            joinedload(Expense.payer),
+        )
+        .filter(Expense.group_id == group_id)
+        .order_by(Expense.date.desc())
+        .offset(offset)
+        .limit(limit)
+        .all()
+    )
+
+    total = db.query(Expense).filter(Expense.group_id == group_id).count()
+
+    return {
+        "items": [_build_expense_response(e) for e in expenses],
+        "total": total,
+        "limit": limit,
+        "offset": offset,
+        "has_more": (offset + limit) < total,
+    }
 
 
 def delete_expense(db: Session, expense_id: UUID, current_user_id: UUID):
@@ -89,9 +115,10 @@ def delete_expense(db: Session, expense_id: UUID, current_user_id: UUID):
     db.commit()
 
 
-def _build_expense_response(db: Session, expense: Expense) -> dict:
-    payer = db.query(User).filter(User.id == expense.paid_by).first()
-    splits = db.query(ExpenseSplit).filter(ExpenseSplit.expense_id == expense.id).all()
+def _build_expense_response(expense: Expense) -> dict:
+    # Gunakan relationship yang sudah di-load (tidak trigger query baru)
+    payer = expense.payer
+    splits = expense.splits
 
     return {
         "id": expense.id,

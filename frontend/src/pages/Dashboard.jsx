@@ -29,7 +29,7 @@ const Dashboard = () => {
       setGroups(gRes.data.slice(0, 3));
       setDebts(dRes.data);
       setActivities(aRes.data.slice(0, 3));
-    } catch (e) { console.error(e); }
+    } catch (e) { if (import.meta.env.DEV) console.error(e); }
   };
 
   useEffect(() => { fetchData(); }, []);
