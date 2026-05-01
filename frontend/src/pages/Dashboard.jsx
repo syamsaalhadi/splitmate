@@ -16,23 +16,35 @@ const Dashboard = () => {
   const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
   const [isGroupModalOpen, setIsGroupModalOpen] = useState(false);
   const [groups, setGroups] = useState([]);
+  const [invitations, setInvitations] = useState([]);
   const [debts, setDebts] = useState(null);
   const [activities, setActivities] = useState([]);
 
   const fetchData = async () => {
     try {
-      const [gRes, dRes, aRes] = await Promise.all([
+      const [gRes, dRes, aRes, invRes] = await Promise.all([
         api.get('/groups'),
         api.get('/users/me/debts'),
         api.get('/users/me/activities'),
+        api.get('/groups/invitations')
       ]);
       setGroups(gRes.data.slice(0, 3));
       setDebts(dRes.data);
       setActivities(aRes.data.slice(0, 3));
+      setInvitations(invRes.data);
     } catch (e) { if (import.meta.env.DEV) console.error(e); }
   };
 
   useEffect(() => { fetchData(); }, []);
+
+  const handleRespondInvite = async (groupId, action) => {
+    try {
+      await api.patch(`/groups/invitations/${groupId}`, { action });
+      fetchData();
+    } catch (e) {
+      if (import.meta.env.DEV) console.error(e);
+    }
+  };
 
   const formatRupiah = (n) => `Rp ${Number(n).toLocaleString('id-ID')}`;
 
@@ -119,6 +131,46 @@ const Dashboard = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Left Column: Recent Groups */}
             <section className="lg:col-span-2 space-y-6">
+
+              {/* Invitations Section */}
+              {invitations.length > 0 && (
+                <div className="space-y-4 mb-8">
+                  <h2 className="text-xl font-bold text-on-surface font-headline flex items-center gap-2">
+                    <span className="material-symbols-outlined text-primary">mail</span>
+                    Undangan Grup
+                  </h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {invitations.map((inv) => (
+                      <div key={inv.group_id} className="p-5 bg-surface-container-high rounded-3xl border border-primary/20 flex flex-col gap-4">
+                        <div className="flex items-start gap-4">
+                          <div className="w-12 h-12 bg-primary/20 rounded-2xl flex items-center justify-center text-primary shadow-sm">
+                            <span className="material-symbols-outlined">{inv.group_icon}</span>
+                          </div>
+                          <div>
+                            <h3 className="font-bold text-lg text-on-surface mb-0.5 font-headline">{inv.group_name}</h3>
+                            <p className="text-slate-500 text-xs font-body">Diundang oleh <span className="font-bold text-on-surface-variant">{inv.inviter_name}</span></p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2 mt-auto">
+                          <button
+                            onClick={() => handleRespondInvite(inv.group_id, 'accept')}
+                            className="flex-1 py-2 rounded-xl bg-primary text-white text-xs font-bold hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-1 font-body"
+                          >
+                            <span className="material-symbols-outlined text-sm">check</span> Terima
+                          </button>
+                          <button
+                            onClick={() => handleRespondInvite(inv.group_id, 'reject')}
+                            className="flex-1 py-2 rounded-xl bg-surface-container-highest text-on-surface text-xs font-bold hover:brightness-90 active:scale-95 transition-all flex items-center justify-center gap-1 font-body"
+                          >
+                            <span className="material-symbols-outlined text-sm">close</span> Tolak
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-bold text-on-surface font-headline">Grup Terbaru</h2>
                 <Link to="/groups" className="text-primary font-semibold text-sm hover:underline font-body">Lihat Semua</Link>

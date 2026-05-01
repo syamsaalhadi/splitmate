@@ -26,3 +26,8 @@ def list_expenses(
 @router.delete("/expenses/{expense_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete(expense_id: UUID, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     delete_expense(db, expense_id, current_user.id)
+
+@router.patch("/expenses/{expense_id}/splits/{user_id}/remind", status_code=status.HTTP_200_OK)
+def remind(expense_id: UUID, user_id: UUID, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    from app.services.expenses import remind_expense_split
+    return remind_expense_split(db, expense_id, user_id, current_user.id)

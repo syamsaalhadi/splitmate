@@ -5,6 +5,7 @@ from typing import Optional
 from pydantic import BaseModel
 
 class SettlementCreate(BaseModel):
+    from_user_id: UUID
     to_user_id: UUID
     amount: Decimal
     group_id: UUID
@@ -17,7 +18,11 @@ class SettlementResponse(BaseModel):
     to_user: UUID
     amount: Decimal
     notes: Optional[str] = None
+    status: str
     settled_at: datetime
 
     class Config:
         from_attributes = True
+
+class SettlementAction(BaseModel):
+    action: str # "accept" or "reject"

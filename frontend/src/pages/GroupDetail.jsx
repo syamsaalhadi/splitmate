@@ -7,89 +7,37 @@ import SettleUpModal from '../components/ui/SettleUpModal';
 import { useParams } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import api from '../services/api';
+import AddMemberModal from '../components/ui/AddMemberModal';
 
-const AddMemberModal = ({ groupId, onSuccess, onClose }) => {
-  const [email, setEmail] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!email.trim()) { setError('Email wajib diisi'); return; }
-    setLoading(true);
-    setError('');
-    try {
-      await api.post(`/groups/${groupId}/members`, { email: email.trim() });
-      onSuccess();
-      onClose();
-    } catch (err) {
-      setError(err.response?.data?.detail || 'Gagal menambah anggota');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm" onClick={onClose}>
-      <div className="bg-surface-container-lowest rounded-3xl p-8 w-full max-w-sm shadow-xl" onClick={e => e.stopPropagation()}>
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-extrabold text-on-surface font-headline">Tambah Anggota</h2>
-          <button onClick={onClose} className="p-2 rounded-full hover:bg-surface-container transition-colors">
-            <span className="material-symbols-outlined text-outline">close</span>
-          </button>
-        </div>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="text-sm font-semibold text-on-surface-variant font-body block mb-1.5">Email anggota</label>
-            <input
-              type="email"
-              value={email}
-              onChange={e => { setEmail(e.target.value); setError(''); }}
-              className={`w-full bg-surface-container-high border rounded-xl px-4 py-3 text-sm text-on-surface outline-none transition font-body focus:border-primary ${error ? 'border-error' : 'border-transparent'}`}
-              placeholder="contoh@email.com"
-              autoFocus
-            />
-            {error && <p className="text-error text-xs mt-1 font-body">{error}</p>}
-          </div>
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-primary text-on-primary font-bold py-3 rounded-full text-sm hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-60 font-body flex items-center justify-center gap-2"
-          >
-            {loading ? <span className="material-symbols-outlined text-lg animate-spin">progress_activity</span> : <span className="material-symbols-outlined text-lg">person_add</span>}
-            {loading ? 'Menambahkan...' : 'Tambah Anggota'}
-          </button>
-        </form>
-      </div>
-    </div>
-  );
-};
 
 const GroupDetail = () => {
   const { id } = useParams();
   const { user: currentUser } = useContext(AuthContext);
   const [isSettleModalOpen, setIsSettleModalOpen] = useState(false);
-  const [settleData, setSettleData] = useState({ contact: '', amount: 0, toUserId: null, groupId: null });
+  const [settleData, setSettleData] = useState({ contact: '', amount: 0, fromUserId: null, toUserId: null, groupId: null });
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
-  const [isAddMemberOpen, setIsAddMemberOpen] = useState(false);
-
+  const [isAddMemberModalOpen, setIsAddMemberModalOpen] = useState(false);
   const [group, setGroup] = useState(null);
   const [expenses, setExpenses] = useState([]);
   const [debts, setDebts] = useState(null);
+  const [pendingSettlements, setPendingSettlements] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const fetchAll = useCallback(async () => {
     setLoading(true);
     try {
-      const [gRes, eRes, dRes] = await Promise.all([
+      const [gRes, eRes, dRes, pendingRes] = await Promise.all([
         api.get(`/groups/${id}`),
         api.get(`/groups/${id}/expenses`),
         api.get(`/groups/${id}/debts`),
+        api.get(`/groups/${id}/settlements/pending`)
       ]);
       setGroup(gRes.data);
       setExpenses(eRes.data.items ?? eRes.data);
       setDebts(dRes.data);
+      setPendingSettlements(pendingRes.data);
     } catch (e) {
       if (import.meta.env.DEV) console.error(e);
     } finally {
@@ -99,8 +47,8 @@ const GroupDetail = () => {
 
   useEffect(() => { fetchAll(); }, [fetchAll]);
 
-  const handleSettleUp = (contact, amount, toUserId) => {
-    setSettleData({ contact, amount, toUserId, groupId: id });
+  const handleSettleUp = (contact, amount, fromUserId, toUserId) => {
+    setSettleData({ contact, amount, fromUserId, toUserId, groupId: id });
     setIsSettleModalOpen(true);
   };
 
@@ -108,6 +56,15 @@ const GroupDetail = () => {
     if (!confirm('Hapus anggota ini dari grup?')) return;
     try {
       await api.delete(`/groups/${id}/members/${userId}`);
+      fetchAll();
+    } catch (e) {
+      if (import.meta.env.DEV) console.error(e);
+    }
+  };
+
+  const handleRespondSettlement = async (settlementId, action) => {
+    try {
+      await api.patch(`/settlements/${settlementId}`, { action });
       fetchAll();
     } catch (e) {
       if (import.meta.env.DEV) console.error(e);
@@ -158,18 +115,18 @@ const GroupDetail = () => {
             </div>
             <div className="mt-8 pt-8 border-t border-surface-container-highest flex flex-wrap gap-4">
               <button
+                onClick={() => setIsAddMemberModalOpen(true)}
+                className="bg-surface-container-high text-on-surface border border-outline-variant px-6 py-3 rounded-full font-bold flex items-center gap-2 hover:bg-surface-container-highest transition-all transform active:scale-95 font-body"
+              >
+                <span className="material-symbols-outlined">person_add</span>
+                Tambah Anggota
+              </button>
+              <button
                 onClick={() => setIsExpenseModalOpen(true)}
                 className="bg-gradient-to-r from-primary to-primary-container text-white px-6 py-3 rounded-full font-bold flex items-center gap-2 hover:opacity-90 transition-all transform active:scale-95 font-body"
               >
                 <span className="material-symbols-outlined">add_circle</span>
                 Tambah Pengeluaran
-              </button>
-              <button
-                onClick={() => setIsAddMemberOpen(true)}
-                className="border-2 border-primary text-primary px-6 py-3 rounded-full font-bold flex items-center gap-2 hover:bg-primary/5 transition-all active:scale-95 font-body"
-              >
-                <span className="material-symbols-outlined">person_add</span>
-                Tambah Anggota
               </button>
             </div>
           </section>
@@ -239,7 +196,52 @@ const GroupDetail = () => {
             </section>
           )}
 
-          {/* Pengeluaran */}
+
+          {/* Persetujuan Pembayaran */}
+          {pendingSettlements.length > 0 && (
+            <section className="bg-primary/5 rounded-2xl p-6 border border-primary/20">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-bold flex items-center gap-2 font-headline text-primary">
+                  <span className="material-symbols-outlined">hourglass_empty</span>
+                  Persetujuan Pembayaran
+                </h2>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {pendingSettlements.map((s) => (
+                  <div key={s.id} className="bg-surface-container-lowest p-5 rounded-xl border border-primary/10 shadow-sm flex flex-col gap-4">
+                    <div className="flex items-start gap-4">
+                      <div className="w-10 h-10 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-sm shadow-sm shrink-0">
+                        {s.from_user_name[0]}
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium font-body leading-tight text-on-surface">
+                          <span className="font-bold">{s.from_user_name}</span> telah membayar ke kamu sebesar:
+                        </p>
+                        <p className="text-2xl font-bold font-headline text-primary mt-1">{formatRupiah(s.amount)}</p>
+                        {s.notes && <p className="text-xs text-on-surface-variant font-body mt-1">Via {s.notes}</p>}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 mt-auto">
+                      <button
+                        onClick={() => handleRespondSettlement(s.id, 'accept')}
+                        className="flex-1 py-2 rounded-xl bg-primary text-white text-xs font-bold hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-1 font-body"
+                      >
+                        <span className="material-symbols-outlined text-sm">check</span> Terima
+                      </button>
+                      <button
+                        onClick={() => handleRespondSettlement(s.id, 'reject')}
+                        className="flex-1 py-2 rounded-xl bg-surface-container-highest text-on-surface text-xs font-bold hover:brightness-90 active:scale-95 transition-all flex items-center justify-center gap-1 font-body"
+                      >
+                        <span className="material-symbols-outlined text-sm">close</span> Tolak
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+
           <section className="space-y-4">
             <h2 className="text-xl font-bold font-headline">Pengeluaran</h2>
             {expenses.length === 0 ? (
@@ -303,7 +305,7 @@ const GroupDetail = () => {
                       </div>
                     </div>
                     <button
-                      onClick={() => handleSettleUp(s.to_user_name, s.amount, s.to_user_id)}
+                      onClick={() => handleSettleUp(s.to_user_name, s.amount, s.from_user_id, s.to_user_id)}
                       className="text-xs font-bold bg-primary text-white px-4 py-2 rounded-full hover:opacity-90 active:scale-95 transition-all font-body"
                     >Tandai Lunas</button>
                   </div>
@@ -314,18 +316,13 @@ const GroupDetail = () => {
         </div>
       </main>
 
-      {isAddMemberOpen && (
-        <AddMemberModal
-          groupId={id}
-          onSuccess={fetchAll}
-          onClose={() => setIsAddMemberOpen(false)}
-        />
-      )}
+
       <SettleUpModal
         isOpen={isSettleModalOpen}
         onClose={() => setIsSettleModalOpen(false)}
         defaultContact={settleData.contact}
         defaultAmount={settleData.amount}
+        fromUserId={settleData.fromUserId}
         toUserId={settleData.toUserId}
         groupId={settleData.groupId}
         onSuccess={fetchAll}
@@ -333,6 +330,12 @@ const GroupDetail = () => {
       <NewExpenseModal
         isOpen={isExpenseModalOpen}
         onClose={() => setIsExpenseModalOpen(false)}
+        groupId={id}
+        onSuccess={fetchAll}
+      />
+      <AddMemberModal
+        isOpen={isAddMemberModalOpen}
+        onClose={() => setIsAddMemberModalOpen(false)}
         groupId={id}
         onSuccess={fetchAll}
       />

@@ -28,6 +28,7 @@ CREATE TABLE group_members (
     group_id UUID NOT NULL REFERENCES groups(id) ON DELETE CASCADE,
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     role VARCHAR(20) NOT NULL DEFAULT 'member' CHECK (role IN ('admin', 'member')),
+    status VARCHAR(20) DEFAULT 'accepted' CHECK (status IN ('pending', 'accepted', 'rejected')),
     joined_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     UNIQUE(group_id, user_id)
 );
@@ -54,6 +55,7 @@ CREATE TABLE expense_splits (
     amount_owed DECIMAL(12, 2) NOT NULL CHECK (amount_owed >= 0),
     is_settled BOOLEAN NOT NULL DEFAULT FALSE,
     settled_at TIMESTAMP WITH TIME ZONE,
+    last_reminded_at TIMESTAMP WITH TIME ZONE,
     UNIQUE(expense_id, user_id)
 );
 
@@ -65,6 +67,7 @@ CREATE TABLE settlements (
     to_user UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     amount DECIMAL(12, 2) NOT NULL CHECK (amount > 0),
     notes TEXT,
+    status VARCHAR(20) DEFAULT 'confirmed' CHECK (status IN ('pending', 'confirmed', 'rejected')),
     settled_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     CHECK (from_user <> to_user)
 );
@@ -91,3 +94,12 @@ CREATE INDEX idx_expense_splits_user ON expense_splits(user_id);
 CREATE INDEX idx_settlements_from_user ON settlements(from_user);
 CREATE INDEX idx_settlements_to_user ON settlements(to_user);
 CREATE INDEX idx_ai_predictions_user ON ai_predictions(user_id);
+
+-- 8. FRIENDSHIPS
+CREATE TABLE friendships (
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    friend_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'accepted', 'rejected')),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    PRIMARY KEY (user_id, friend_id)
+);

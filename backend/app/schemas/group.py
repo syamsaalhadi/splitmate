@@ -20,11 +20,15 @@ class GroupMemberResponse(BaseModel):
     id: UUID
     user_id: UUID
     role: str
+    status: str
     joined_at: datetime
     user: UserResponse
 
     class Config:
         from_attributes = True
+
+class GroupInviteAction(BaseModel):
+    action: str # "accept" or "reject"
 
 class GroupResponse(BaseModel):
     id: UUID

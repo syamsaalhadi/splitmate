@@ -7,7 +7,6 @@ from app.models.user import User
 from app.models.expense import Expense, ExpenseSplit
 from app.schemas.group import GroupCreate, CATEGORY_ICONS
 
-
 def create_group(db: Session, payload: GroupCreate, user_id: UUID) -> Group:
     group = Group(
         name=payload.name,
@@ -18,29 +17,26 @@ def create_group(db: Session, payload: GroupCreate, user_id: UUID) -> Group:
     db.add(group)
     db.flush()
 
-    member = GroupMember(group_id=group.id, user_id=user_id, role="admin")
+    member = GroupMember(group_id=group.id, user_id=user_id, role="admin", status="accepted")
     db.add(member)
     db.commit()
     db.refresh(group)
     return group
 
-
 def get_user_groups(db: Session, user_id: UUID) -> list:
-    # Single query: semua grup user + group data sekaligus
     memberships = (
         db.query(GroupMember)
         .options(joinedload(GroupMember.group))
-        .filter(GroupMember.user_id == user_id)
+        .filter(GroupMember.user_id == user_id, GroupMember.status == "accepted")
         .all()
     )
     group_ids = [m.group_id for m in memberships]
     if not group_ids:
         return []
 
-    # Batch aggregations — 3 query untuk semua grup sekaligus, bukan per grup
     member_counts = dict(
         db.query(GroupMember.group_id, func.count(GroupMember.id))
-        .filter(GroupMember.group_id.in_(group_ids))
+        .filter(GroupMember.group_id.in_(group_ids), GroupMember.status == "accepted")
         .group_by(GroupMember.group_id)
         .all()
     )
@@ -77,7 +73,6 @@ def get_user_groups(db: Session, user_id: UUID) -> list:
         })
     return result
 
-
 def get_group_detail(db: Session, group_id: UUID, user_id: UUID) -> dict:
     _assert_member(db, group_id, user_id)
 
@@ -85,7 +80,6 @@ def get_group_detail(db: Session, group_id: UUID, user_id: UUID) -> dict:
     if not group:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Grup tidak ditemukan")
 
-    # Eager load members + user sekaligus
     members = (
         db.query(GroupMember)
         .options(joinedload(GroupMember.user))
@@ -93,7 +87,7 @@ def get_group_detail(db: Session, group_id: UUID, user_id: UUID) -> dict:
         .all()
     )
 
-    member_count = len(members)
+    member_count = sum(1 for m in members if m.status == "accepted")
     total = db.query(func.coalesce(func.sum(Expense.amount), 0)).filter(Expense.group_id == group_id).scalar()
     unsettled = db.query(func.count(ExpenseSplit.id)).join(
         Expense, ExpenseSplit.expense_id == Expense.id
@@ -118,6 +112,7 @@ def get_group_detail(db: Session, group_id: UUID, user_id: UUID) -> dict:
                 "id": m.id,
                 "user_id": m.user_id,
                 "role": m.role,
+                "status": m.status,
                 "joined_at": m.joined_at,
                 "user": {
                     "id": m.user.id,
@@ -131,7 +126,6 @@ def get_group_detail(db: Session, group_id: UUID, user_id: UUID) -> dict:
         ]
     }
 
-
 def delete_group(db: Session, group_id: UUID, user_id: UUID):
     _assert_admin(db, group_id, user_id)
     group = db.query(Group).filter(Group.id == group_id).first()
@@ -139,7 +133,6 @@ def delete_group(db: Session, group_id: UUID, user_id: UUID):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Grup tidak ditemukan")
     db.delete(group)
     db.commit()
-
 
 def add_member(db: Session, group_id: UUID, email: str, requester_id: UUID) -> dict:
     _assert_member(db, group_id, requester_id)
@@ -153,9 +146,11 @@ def add_member(db: Session, group_id: UUID, email: str, requester_id: UUID) -> d
         GroupMember.user_id == target_user.id
     ).first()
     if already:
+        if already.status == "pending":
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Undangan sudah dikirim ke user ini")
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User sudah menjadi anggota grup ini")
 
-    member = GroupMember(group_id=group_id, user_id=target_user.id, role="member")
+    member = GroupMember(group_id=group_id, user_id=target_user.id, role="member", status="pending")
     db.add(member)
     db.commit()
     db.refresh(member)
@@ -164,6 +159,7 @@ def add_member(db: Session, group_id: UUID, email: str, requester_id: UUID) -> d
         "id": member.id,
         "user_id": member.user_id,
         "role": member.role,
+        "status": member.status,
         "joined_at": member.joined_at,
         "user": {
             "id": target_user.id,
@@ -173,7 +169,6 @@ def add_member(db: Session, group_id: UUID, email: str, requester_id: UUID) -> d
             "created_at": target_user.created_at,
         }
     }
-
 
 def remove_member(db: Session, group_id: UUID, target_user_id: UUID, requester_id: UUID):
     _assert_admin(db, group_id, requester_id)
@@ -191,21 +186,64 @@ def remove_member(db: Session, group_id: UUID, target_user_id: UUID, requester_i
     db.delete(member)
     db.commit()
 
+def get_group_invitations(db: Session, user_id: UUID):
+    invites = (
+        db.query(GroupMember)
+        .options(joinedload(GroupMember.group))
+        .filter(GroupMember.user_id == user_id, GroupMember.status == "pending")
+        .all()
+    )
+    result = []
+    for inv in invites:
+        group = inv.group
+        # Get inviter manually or just use the group creator as simple
+        # In reality, it was sent by someone, but group creator is fine for display
+        inviter = db.query(User).filter(User.id == group.created_by).first()
+        result.append({
+            "group_id": group.id,
+            "group_name": group.name,
+            "group_icon": CATEGORY_ICONS.get(group.category, "category"),
+            "inviter_name": inviter.name if inviter else "Seseorang",
+            "invited_at": inv.joined_at
+        })
+    return result
+
+def respond_group_invitation(db: Session, user_id: UUID, group_id: UUID, action: str):
+    member = db.query(GroupMember).filter(
+        GroupMember.group_id == group_id,
+        GroupMember.user_id == user_id,
+        GroupMember.status == "pending"
+    ).first()
+
+    if not member:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Undangan grup tidak ditemukan")
+
+    if action == "accept":
+        member.status = "accepted"
+        db.commit()
+        return {"message": "Undangan grup diterima"}
+    elif action == "reject":
+        db.delete(member)
+        db.commit()
+        return {"message": "Undangan grup ditolak"}
+    else:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Aksi tidak valid")
 
 def _assert_member(db: Session, group_id: UUID, user_id: UUID):
     member = db.query(GroupMember).filter(
         GroupMember.group_id == group_id,
-        GroupMember.user_id == user_id
+        GroupMember.user_id == user_id,
+        GroupMember.status == "accepted"
     ).first()
     if not member:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Kamu bukan anggota grup ini")
-
 
 def _assert_admin(db: Session, group_id: UUID, user_id: UUID):
     member = db.query(GroupMember).filter(
         GroupMember.group_id == group_id,
         GroupMember.user_id == user_id,
-        GroupMember.role == "admin"
+        GroupMember.role == "admin",
+        GroupMember.status == "accepted"
     ).first()
     if not member:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Hanya admin yang bisa melakukan aksi ini")

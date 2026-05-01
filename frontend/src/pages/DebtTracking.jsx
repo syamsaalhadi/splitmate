@@ -13,14 +13,22 @@ const DebtTracking = () => {
   const [settleData, setSettleData] = useState({ contact: '', amount: 0, toUserId: null, groupId: null });
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState('owe');
+  const [activeTab, setActiveTab] = useState('friends');
   const [debts, setDebts] = useState(null);
+  const [friends, setFriends] = useState([]);
+  const [friendRequests, setFriendRequests] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchDebts = async () => {
+  const fetchData = async () => {
     try {
-      const res = await api.get('/users/me/debts');
-      setDebts(res.data);
+      const [debtsRes, friendsRes, reqsRes] = await Promise.all([
+        api.get('/users/me/debts'),
+        api.get('/friends'),
+        api.get('/friends/requests')
+      ]);
+      setDebts(debtsRes.data);
+      setFriends(friendsRes.data);
+      setFriendRequests(reqsRes.data);
     } catch (e) {
       if (import.meta.env.DEV) console.error(e);
     } finally {
@@ -28,11 +36,31 @@ const DebtTracking = () => {
     }
   };
 
-  useEffect(() => { fetchDebts(); }, []);
+  useEffect(() => { fetchData(); }, []);
 
   const handleSettleUp = (contact, amount, toUserId, groupId) => {
     setSettleData({ contact, amount, toUserId, groupId });
     setIsSettleModalOpen(true);
+  };
+
+  const handleBuzzer = async (expenseId, userId) => {
+    try {
+      await api.patch(`/expenses/${expenseId}/splits/${userId}/remind`);
+      fetchData();
+      alert("Pengingat berhasil dikirim!");
+    } catch (e) {
+      if (import.meta.env.DEV) console.error(e);
+      alert(e.response?.data?.detail || "Gagal mengirim pengingat");
+    }
+  };
+
+  const handleRespondRequest = async (userId, action) => {
+    try {
+      await api.patch(`/friends/requests/${userId}`, { action });
+      fetchData();
+    } catch (e) {
+      if (import.meta.env.DEV) console.error(e);
+    }
   };
 
   const formatRupiah = (n) => `Rp ${Number(n).toLocaleString('id-ID')}`;
@@ -50,9 +78,16 @@ const DebtTracking = () => {
 
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-2">
             <div>
-              <h1 className="text-4xl font-extrabold tracking-tight text-on-surface mb-2 font-headline">Daftar Hutang</h1>
-              <p className="text-on-surface-variant font-body">Lacak hutang dan piutang pribadi untuk pelunasan mudah.</p>
+              <h1 className="text-4xl font-extrabold tracking-tight text-on-surface mb-2 font-headline">Teman & Hutang</h1>
+              <p className="text-on-surface-variant font-body">Kelola daftar teman dan lacak hutang piutang.</p>
             </div>
+            <button
+              onClick={() => setIsAddFriendModalOpen(true)}
+              className="bg-surface-container-high text-on-surface border border-outline-variant px-6 py-3 rounded-full font-bold flex items-center gap-2 hover:bg-surface-container-highest transition-all transform active:scale-95 font-body"
+            >
+              <span className="material-symbols-outlined">person_add</span>
+              Add Friend
+            </button>
           </div>
 
           {loading ? (
@@ -80,7 +115,13 @@ const DebtTracking = () => {
               </div>
 
               {/* Tabs */}
-              <div className="flex bg-surface-container-low p-1.5 rounded-2xl w-fit">
+              <div className="flex bg-surface-container-low p-1.5 rounded-2xl w-fit flex-wrap gap-1">
+                <button
+                  onClick={() => setActiveTab('friends')}
+                  className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all font-body ${activeTab === 'friends' ? 'bg-white shadow-sm text-primary' : 'text-slate-500 hover:text-primary'}`}
+                >
+                  Daftar Teman ({friends.length})
+                </button>
                 <button
                   onClick={() => setActiveTab('owe')}
                   className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all font-body ${activeTab === 'owe' ? 'bg-white shadow-sm text-primary' : 'text-slate-500 hover:text-primary'}`}
@@ -97,6 +138,75 @@ const DebtTracking = () => {
 
               {/* List */}
               <div className="space-y-4">
+                {activeTab === 'friends' && (
+                  <div className="space-y-8">
+                    {friendRequests.length > 0 && (
+                      <div>
+                        <h3 className="text-lg font-bold text-on-surface mb-3 font-headline">Permintaan Pertemanan</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {friendRequests.map((req) => (
+                            <div key={req.id} className="bg-surface-container-high p-4 rounded-[1.5rem] flex items-center justify-between hover:shadow-sm transition-shadow">
+                              <div className="flex items-center gap-4">
+                                {req.avatar_url ? (
+                                  <img src={req.avatar_url} alt={req.name} className="w-10 h-10 rounded-full object-cover" />
+                                ) : (
+                                  <div className="w-10 h-10 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-base">
+                                    {req.name[0]}
+                                  </div>
+                                )}
+                                <div>
+                                  <h3 className="text-sm font-bold text-on-surface leading-tight font-headline">{req.name}</h3>
+                                  <p className="text-xs text-on-surface-variant font-medium mt-0.5 font-body">{req.email}</p>
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <button
+                                  onClick={() => handleRespondRequest(req.id, 'accept')}
+                                  className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center hover:opacity-90 active:scale-95 transition-all"
+                                  title="Terima"
+                                >
+                                  <span className="material-symbols-outlined text-sm">check</span>
+                                </button>
+                                <button
+                                  onClick={() => handleRespondRequest(req.id, 'reject')}
+                                  className="w-8 h-8 rounded-full bg-error text-white flex items-center justify-center hover:opacity-90 active:scale-95 transition-all"
+                                  title="Tolak"
+                                >
+                                  <span className="material-symbols-outlined text-sm">close</span>
+                                </button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    <div>
+                      {friendRequests.length > 0 && <h3 className="text-lg font-bold text-on-surface mb-3 font-headline">Daftar Teman</h3>}
+                      {friends.length === 0
+                        ? <p className="text-on-surface-variant text-sm font-body text-center py-8">Belum ada teman yang ditambahkan.</p>
+                        : <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {friends.map((friend) => (
+                              <div key={friend.id} className="bg-surface-container-lowest p-4 rounded-[1.5rem] flex items-center gap-4 hover:shadow-sm transition-shadow">
+                                {friend.avatar_url ? (
+                                  <img src={friend.avatar_url} alt={friend.name} className="w-12 h-12 rounded-full object-cover" />
+                                ) : (
+                                  <div className="w-12 h-12 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-lg">
+                                    {friend.name[0]}
+                                  </div>
+                                )}
+                                <div>
+                                  <h3 className="text-base font-bold text-on-surface leading-tight font-headline">{friend.name}</h3>
+                                  <p className="text-xs text-on-surface-variant font-medium mt-1 font-body">{friend.email}</p>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                      }
+                    </div>
+                  </div>
+                )}
+
                 {activeTab === 'owe' && (
                   oweList.length === 0
                     ? <p className="text-on-surface-variant text-sm font-body text-center py-8">Tidak ada hutang aktif.</p>
@@ -147,6 +257,14 @@ const DebtTracking = () => {
                             <span className="text-xl font-extrabold text-[#1D9E75] tracking-tight font-headline">{formatRupiah(item.amount)}</span>
                             <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-secondary-container text-on-secondary-container mt-2 w-fit font-body">{item.status}</span>
                           </div>
+                          <div className="flex items-center gap-2 sm:ml-4">
+                            <button
+                              onClick={() => handleBuzzer(item.expense_id, item.from_user_id)}
+                              className="px-4 py-2.5 rounded-xl text-xs font-bold border border-[#E24B4A] text-[#E24B4A] hover:bg-[#E24B4A] hover:text-white transition-colors flex items-center justify-center gap-2 font-body"
+                            >
+                              <span className="material-symbols-outlined text-sm">notifications_active</span> Kirim Buzzer
+                            </button>
+                          </div>
                         </div>
                       ))
                 )}
@@ -163,9 +281,9 @@ const DebtTracking = () => {
         defaultAmount={settleData.amount}
         toUserId={settleData.toUserId}
         groupId={settleData.groupId}
-        onSuccess={fetchDebts}
+        onSuccess={fetchData}
       />
-      <AddFriendModal isOpen={isAddFriendModalOpen} onClose={() => setIsAddFriendModalOpen(false)} />
+      <AddFriendModal isOpen={isAddFriendModalOpen} onClose={() => setIsAddFriendModalOpen(false)} onSuccess={fetchData} />
       <NewExpenseModal isOpen={isExpenseModalOpen} onClose={() => setIsExpenseModalOpen(false)} />
       <BottomNav onAddClick={() => setIsExpenseModalOpen(true)} />
     </div>

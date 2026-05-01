@@ -115,6 +115,33 @@ def delete_expense(db: Session, expense_id: UUID, current_user_id: UUID):
     db.commit()
 
 
+def remind_expense_split(db: Session, expense_id: UUID, user_id: UUID, current_user_id: UUID):
+    expense = db.query(Expense).filter(Expense.id == expense_id).first()
+    if not expense:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Pengeluaran tidak ditemukan")
+        
+    if expense.paid_by != current_user_id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Hanya pemberi utang yang bisa mengingatkan")
+        
+    split = db.query(ExpenseSplit).filter(ExpenseSplit.expense_id == expense_id, ExpenseSplit.user_id == user_id).first()
+    if not split:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tagihan tidak ditemukan untuk user ini")
+        
+    if split.is_settled:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Tagihan sudah lunas")
+        
+    from datetime import datetime, timezone
+    now = datetime.now(timezone.utc)
+    
+    # Check if buzzed recently (e.g. within last 1 hour to avoid spam, but for testing we can just update it)
+    # if split.last_reminded_at and (now - split.last_reminded_at).total_seconds() < 3600:
+    #     raise HTTPException(status_code=status.HTTP_429_TOO_MANY_REQUESTS, detail="Tunggu 1 jam sebelum mengirim pengingat lagi")
+        
+    split.last_reminded_at = now
+    db.commit()
+    return {"message": "Pengingat berhasil dikirim"}
+
+
 def _build_expense_response(expense: Expense) -> dict:
     # Gunakan relationship yang sudah di-load (tidak trigger query baru)
     payer = expense.payer

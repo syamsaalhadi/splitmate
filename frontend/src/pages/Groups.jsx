@@ -17,12 +17,17 @@ const Groups = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [groups, setGroups] = useState([]);
+  const [invitations, setInvitations] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const fetchGroups = async () => {
     try {
-      const res = await api.get('/groups');
-      setGroups(res.data);
+      const [gRes, invRes] = await Promise.all([
+        api.get('/groups'),
+        api.get('/groups/invitations')
+      ]);
+      setGroups(gRes.data);
+      setInvitations(invRes.data);
     } catch (e) {
       if (import.meta.env.DEV) console.error(e);
     } finally {
@@ -31,6 +36,15 @@ const Groups = () => {
   };
 
   useEffect(() => { fetchGroups(); }, []);
+
+  const handleRespondInvite = async (groupId, action) => {
+    try {
+      await api.patch(`/groups/invitations/${groupId}`, { action });
+      fetchGroups();
+    } catch (e) {
+      if (import.meta.env.DEV) console.error(e);
+    }
+  };
 
   const formatRupiah = (n) => `Rp ${Number(n).toLocaleString('id-ID')}`;
 
@@ -60,7 +74,46 @@ const Groups = () => {
               <span className="material-symbols-outlined text-4xl animate-spin text-primary">progress_activity</span>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <>
+              {invitations.length > 0 && (
+                <div className="space-y-4 mb-8">
+                  <h2 className="text-xl font-bold text-on-surface font-headline flex items-center gap-2">
+                    <span className="material-symbols-outlined text-primary">mail</span>
+                    Undangan Grup
+                  </h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {invitations.map((inv) => (
+                      <div key={inv.group_id} className="p-5 bg-surface-container-high rounded-3xl border border-primary/20 flex flex-col gap-4">
+                        <div className="flex items-start gap-4">
+                          <div className="w-12 h-12 bg-primary/20 rounded-2xl flex items-center justify-center text-primary shadow-sm">
+                            <span className="material-symbols-outlined">{inv.group_icon}</span>
+                          </div>
+                          <div>
+                            <h3 className="font-bold text-lg text-on-surface mb-0.5 font-headline">{inv.group_name}</h3>
+                            <p className="text-slate-500 text-xs font-body">Diundang oleh <span className="font-bold text-on-surface-variant">{inv.inviter_name}</span></p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2 mt-auto">
+                          <button
+                            onClick={() => handleRespondInvite(inv.group_id, 'accept')}
+                            className="flex-1 py-2 rounded-xl bg-primary text-white text-xs font-bold hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-1 font-body"
+                          >
+                            <span className="material-symbols-outlined text-sm">check</span> Terima
+                          </button>
+                          <button
+                            onClick={() => handleRespondInvite(inv.group_id, 'reject')}
+                            className="flex-1 py-2 rounded-xl bg-surface-container-highest text-on-surface text-xs font-bold hover:brightness-90 active:scale-95 transition-all flex items-center justify-center gap-1 font-body"
+                          >
+                            <span className="material-symbols-outlined text-sm">close</span> Tolak
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {groups.map((group) => (
                 <Link
                   key={group.id}
@@ -95,6 +148,7 @@ const Groups = () => {
                 <span className="font-bold text-sm font-body">Buat Grup Baru</span>
               </button>
             </div>
+            </>
           )}
         </div>
       </main>

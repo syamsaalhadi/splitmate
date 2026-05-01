@@ -4,7 +4,7 @@ from fastapi.responses import JSONResponse
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
-from app.routers import auth, users, groups, expenses, debts, settlements
+from app.routers import auth, users, groups, expenses, debts, settlements, friends
 
 limiter = Limiter(key_func=get_remote_address)
 
@@ -24,7 +24,7 @@ app.add_middleware(
         "http://localhost:3000",
     ],
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allow_headers=["Content-Type", "Authorization"],
 )
 
@@ -34,6 +34,7 @@ app.include_router(groups.router)
 app.include_router(expenses.router)
 app.include_router(debts.router)
 app.include_router(settlements.router)
+app.include_router(friends.router)
 
 @app.get("/")
 def root():

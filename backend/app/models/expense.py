@@ -33,6 +33,7 @@ class ExpenseSplit(Base):
     amount_owed = Column(Numeric(12, 2), nullable=False)
     is_settled = Column(Boolean, nullable=False, default=False)
     settled_at = Column(DateTime(timezone=True), nullable=True)
+    last_reminded_at = Column(DateTime(timezone=True), nullable=True)
 
     expense = relationship("Expense", back_populates="splits")
     user = relationship("User", back_populates="expense_splits")

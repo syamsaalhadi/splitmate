@@ -4,9 +4,11 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.dependencies import get_current_user
 from app.models.user import User
-from app.schemas.group import GroupCreate
-from app.schemas.group import AddMemberRequest
-from app.services.groups import create_group, get_user_groups, get_group_detail, delete_group, add_member, remove_member
+from app.schemas.group import GroupCreate, AddMemberRequest, GroupInviteAction
+from app.services.groups import (
+    create_group, get_user_groups, get_group_detail, delete_group, 
+    add_member, remove_member, get_group_invitations, respond_group_invitation
+)
 
 router = APIRouter(prefix="/groups", tags=["Groups"])
 
@@ -17,6 +19,14 @@ def create(payload: GroupCreate, db: Session = Depends(get_db), current_user: Us
 @router.get("")
 def list_groups(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     return get_user_groups(db, current_user.id)
+
+@router.get("/invitations")
+def list_invitations(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    return get_group_invitations(db, current_user.id)
+
+@router.patch("/invitations/{group_id}")
+def respond_invitation(group_id: UUID, payload: GroupInviteAction, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    return respond_group_invitation(db, current_user.id, group_id, payload.action)
 
 @router.get("/{group_id}")
 def detail(group_id: UUID, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):

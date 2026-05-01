@@ -1,5 +1,5 @@
 import uuid
-from sqlalchemy import Column, Text, DateTime, ForeignKey, Numeric
+from sqlalchemy import Column, Text, DateTime, ForeignKey, Numeric, String
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
@@ -14,6 +14,7 @@ class Settlement(Base):
     to_user = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     amount = Column(Numeric(12, 2), nullable=False)
     notes = Column(Text, nullable=True)
+    status = Column(String(20), default="confirmed")
     settled_at = Column(DateTime(timezone=True), server_default=func.now())
 
     group = relationship("Group", back_populates="settlements")

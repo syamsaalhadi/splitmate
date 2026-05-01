@@ -17,7 +17,7 @@ def get_group_debts(db: Session, group_id: UUID, current_user_id: UUID) -> dict:
     members = (
         db.query(GroupMember)
         .options(joinedload(GroupMember.user))
-        .filter(GroupMember.group_id == group_id)
+        .filter(GroupMember.group_id == group_id, GroupMember.status == "accepted")
         .all()
     )
     member_ids = [m.user_id for m in members]
@@ -36,6 +36,16 @@ def get_group_debts(db: Session, group_id: UUID, current_user_id: UUID) -> dict:
             if not s.is_settled and s.user_id != exp.paid_by:
                 balances[exp.paid_by] = balances.get(exp.paid_by, 0) + float(s.amount_owed)
                 balances[s.user_id] = balances.get(s.user_id, 0) - float(s.amount_owed)
+
+    from app.models.settlement import Settlement
+    pending_settlements = db.query(Settlement).filter(
+        Settlement.group_id == group_id, 
+        Settlement.status == "pending"
+    ).all()
+    
+    for ps in pending_settlements:
+        balances[ps.to_user] = balances.get(ps.to_user, 0) - float(ps.amount)
+        balances[ps.from_user] = balances.get(ps.from_user, 0) + float(ps.amount)
 
     member_balances = []
     for m in members:
@@ -66,7 +76,7 @@ def get_my_debts(db: Session, current_user_id: UUID) -> dict:
     memberships = (
         db.query(GroupMember)
         .options(joinedload(GroupMember.group))
-        .filter(GroupMember.user_id == current_user_id)
+        .filter(GroupMember.user_id == current_user_id, GroupMember.status == "accepted")
         .all()
     )
 
@@ -200,7 +210,8 @@ def _calculate_settlements(balances: dict, user_map: dict) -> list:
 def _assert_member(db: Session, group_id: UUID, user_id: UUID):
     member = db.query(GroupMember).filter(
         GroupMember.group_id == group_id,
-        GroupMember.user_id == user_id
+        GroupMember.user_id == user_id,
+        GroupMember.status == "accepted"
     ).first()
     if not member:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Kamu bukan anggota grup ini")

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
 
-const SettleUpModal = ({ isOpen, onClose, defaultContact = "Budi", defaultAmount = 150000, toUserId, groupId, onSuccess }) => {
+const SettleUpModal = ({ isOpen, onClose, defaultContact = "Budi", defaultAmount = 150000, fromUserId, toUserId, groupId, onSuccess }) => {
   const [method, setMethod] = useState('Transfer');
   const [amount, setAmount] = useState(defaultAmount);
   const [loading, setLoading] = useState(false);
@@ -24,6 +24,7 @@ const SettleUpModal = ({ isOpen, onClose, defaultContact = "Budi", defaultAmount
     setError('');
     try {
       await api.post('/settlements', {
+        from_user_id: fromUserId,
         to_user_id: toUserId,
         group_id: groupId,
         amount: Number(String(amount).replace(/\./g, '')),

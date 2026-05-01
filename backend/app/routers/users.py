@@ -21,3 +21,8 @@ def update_me(payload: UserUpdate, db: Session = Depends(get_db), current_user: 
 @router.get("/me/activities")
 def my_activities(db=Depends(get_db), current_user: User = Depends(get_current_user)):
     return get_my_activities(db, current_user.id)
+
+@router.get("/me/notifications")
+def my_notifications(db=Depends(get_db), current_user: User = Depends(get_current_user)):
+    from app.services.activities import get_my_notifications
+    return get_my_notifications(db, current_user.id)
