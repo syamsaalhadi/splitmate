@@ -189,8 +189,8 @@ const Dashboard = () => {
                         <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm">
                           <span className="material-symbols-outlined text-indigo-600">{group.icon || CATEGORY_ICONS[group.category] || 'group'}</span>
                         </div>
-                        <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${group.status === 'settled' ? 'bg-secondary-container text-on-secondary-container' : 'bg-amber-100 text-amber-700'}`}>
-                          {group.status === 'settled' ? 'Lunas' : 'Belum Lunas'}
+                        <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${group.payment_status === 'Lunas' ? 'bg-secondary-container text-on-secondary-container' : 'bg-amber-100 text-amber-700'}`}>
+                          {group.payment_status}
                         </span>
                       </div>
                       <h3 className="font-bold text-lg text-on-surface mb-1 font-headline">{group.name}</h3>

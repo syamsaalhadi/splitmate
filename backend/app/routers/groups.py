@@ -7,10 +7,15 @@ from app.models.user import User
 from app.schemas.group import GroupCreate, AddMemberRequest, GroupInviteAction
 from app.services.groups import (
     create_group, get_user_groups, get_group_detail, delete_group, 
-    add_member, remove_member, get_group_invitations, respond_group_invitation
+    add_member, remove_member, get_group_invitations, respond_group_invitation,
+    close_group
 )
 
 router = APIRouter(prefix="/groups", tags=["Groups"])
+
+@router.patch("/{group_id}/close")
+def close(group_id: UUID, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    return close_group(db, group_id, current_user.id)
 
 @router.post("", status_code=status.HTTP_201_CREATED)
 def create(payload: GroupCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):

@@ -14,6 +14,7 @@ class Group(Base):
     category = Column(String(20), nullable=False, default="other")
     created_by = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+    status = Column(String(20), nullable=False, default="active")
 
     creator = relationship("User", back_populates="groups_created")
     members = relationship("GroupMember", back_populates="group", passive_deletes=True)

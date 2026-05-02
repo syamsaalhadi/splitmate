@@ -22,6 +22,12 @@ CATEGORY_ICONS = {
 def create_expense(db: Session, group_id: UUID, payload: ExpenseCreate, current_user_id: UUID) -> dict:
     _assert_member(db, group_id, current_user_id)
 
+    # Cek apakah grup ditutup
+    from app.models.group import Group
+    group = db.query(Group).filter(Group.id == group_id).first()
+    if group.status == "closed":
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Grup sudah ditutup, tidak bisa menambah pengeluaran baru")
+
     paid_by_id = payload.paid_by if payload.paid_by else current_user_id
 
     # Validasi paid_by harus anggota grup yang sama

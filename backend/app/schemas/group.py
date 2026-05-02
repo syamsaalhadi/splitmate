@@ -40,7 +40,8 @@ class GroupResponse(BaseModel):
     created_at: datetime
     member_count: int = 0
     total_spending: float = 0
-    status: str = "Lunas"
+    status: str = "active"
+    payment_status: str = "Lunas"
 
     class Config:
         from_attributes = True

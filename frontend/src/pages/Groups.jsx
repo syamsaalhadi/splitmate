@@ -130,9 +130,15 @@ const Groups = () => {
                     <span className="font-bold text-primary font-headline">{formatRupiah(group.total_spending)}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className={`text-xs font-bold px-3 py-1 rounded-full font-body ${group.status === 'Lunas' ? 'bg-secondary-container text-on-secondary-container' : 'bg-amber-100 text-amber-700'}`}>
-                      {group.status}
+                    <span className={`text-xs font-bold px-3 py-1 rounded-full font-body ${group.payment_status === 'Lunas' ? 'bg-secondary-container text-on-secondary-container' : 'bg-amber-100 text-amber-700'}`}>
+                      {group.payment_status}
                     </span>
+                    {group.status === 'closed' && (
+                      <span className="bg-error/10 text-error text-[10px] font-black px-2 py-0.5 rounded-md uppercase tracking-widest font-body border border-error/20 flex items-center gap-1">
+                        <span className="material-symbols-outlined text-[10px]">lock</span>
+                        Ditutup
+                      </span>
+                    )}
                   </div>
                 </Link>
               ))}

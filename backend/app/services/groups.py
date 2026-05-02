@@ -69,7 +69,8 @@ def get_user_groups(db: Session, user_id: UUID) -> list:
             "created_at": group.created_at,
             "member_count": member_counts.get(gid, 0),
             "total_spending": float(total_spending.get(gid, 0)),
-            "status": "Belum Lunas" if unsettled > 0 else "Lunas",
+            "status": group.status,
+            "payment_status": "Belum Lunas" if unsettled > 0 else "Lunas",
         })
     return result
 
@@ -106,7 +107,8 @@ def get_group_detail(db: Session, group_id: UUID, user_id: UUID) -> dict:
         "created_at": group.created_at,
         "member_count": member_count,
         "total_spending": float(total),
-        "status": "Belum Lunas" if unsettled > 0 else "Lunas",
+        "status": group.status,
+        "payment_status": "Belum Lunas" if unsettled > 0 else "Lunas",
         "members": [
             {
                 "id": m.id,
@@ -131,11 +133,40 @@ def delete_group(db: Session, group_id: UUID, user_id: UUID):
     group = db.query(Group).filter(Group.id == group_id).first()
     if not group:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Grup tidak ditemukan")
+    
+    if group.status != "closed":
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Grup harus ditutup terlebih dahulu sebelum bisa dihapus")
+    
     db.delete(group)
     db.commit()
 
+def close_group(db: Session, group_id: UUID, user_id: UUID):
+    _assert_admin(db, group_id, user_id)
+    group = db.query(Group).filter(Group.id == group_id).first()
+    if not group:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Grup tidak ditemukan")
+    
+    # Cek apakah semua hutang lunas
+    unsettled = db.query(func.count(ExpenseSplit.id)).join(
+        Expense, ExpenseSplit.expense_id == Expense.id
+    ).filter(
+        Expense.group_id == group_id,
+        ExpenseSplit.is_settled == False
+    ).scalar()
+
+    if unsettled > 0:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Grup tidak bisa ditutup karena masih ada hutang yang belum lunas")
+
+    group.status = "closed"
+    db.commit()
+    return {"message": "Grup berhasil ditutup"}
+
 def add_member(db: Session, group_id: UUID, email: str, requester_id: UUID) -> dict:
     _assert_member(db, group_id, requester_id)
+
+    group = db.query(Group).filter(Group.id == group_id).first()
+    if group.status == "closed":
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Grup sudah ditutup, tidak bisa menambah anggota baru")
 
     target_user = db.query(User).filter(User.email == email).first()
     if not target_user:

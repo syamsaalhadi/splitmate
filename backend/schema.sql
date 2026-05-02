@@ -19,7 +19,8 @@ CREATE TABLE groups (
     name VARCHAR(100) NOT NULL,
     description TEXT,
     created_by UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    status VARCHAR(20) DEFAULT 'active' CHECK (status IN ('active', 'closed'))
 );
 
 -- 3. GROUP MEMBERS

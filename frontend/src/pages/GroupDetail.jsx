@@ -4,15 +4,18 @@ import TopAppBar from '../components/layout/TopAppBar';
 import BottomNav from '../components/layout/BottomNav';
 import NewExpenseModal from '../components/ui/NewExpenseModal';
 import SettleUpModal from '../components/ui/SettleUpModal';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import api from '../services/api';
 import AddMemberModal from '../components/ui/AddMemberModal';
+import ConfirmModal from '../components/ui/ConfirmModal';
+import Toast from '../components/ui/Toast';
 
 
 
 const GroupDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { user: currentUser } = useContext(AuthContext);
   const [isSettleModalOpen, setIsSettleModalOpen] = useState(false);
   const [settleData, setSettleData] = useState({ contact: '', amount: 0, fromUserId: null, toUserId: null, groupId: null });
@@ -24,6 +27,14 @@ const GroupDetail = () => {
   const [debts, setDebts] = useState(null);
   const [pendingSettlements, setPendingSettlements] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isCloseConfirmOpen, setIsCloseConfirmOpen] = useState(false);
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
+  const [actionLoading, setActionLoading] = useState(false);
+  const [toast, setToast] = useState({ isOpen: false, message: '', type: 'error' });
+
+  const showToast = (message, type = 'error') => {
+    setToast({ isOpen: true, message, type });
+  };
 
   const fetchAll = useCallback(async () => {
     setLoading(true);
@@ -56,9 +67,10 @@ const GroupDetail = () => {
     if (!confirm('Hapus anggota ini dari grup?')) return;
     try {
       await api.delete(`/groups/${id}/members/${userId}`);
+      showToast('Anggota berhasil dihapus', 'success');
       fetchAll();
     } catch (e) {
-      if (import.meta.env.DEV) console.error(e);
+      showToast(e.response?.data?.detail || 'Gagal menghapus anggota');
     }
   };
 
@@ -68,6 +80,33 @@ const GroupDetail = () => {
       fetchAll();
     } catch (e) {
       if (import.meta.env.DEV) console.error(e);
+    }
+  };
+
+  const handleCloseGroup = async () => {
+    setActionLoading(true);
+    try {
+      await api.patch(`/groups/${id}/close`);
+      setIsCloseConfirmOpen(false);
+      showToast('Grup berhasil ditutup', 'success');
+      fetchAll();
+    } catch (e) {
+      showToast(e.response?.data?.detail || 'Gagal menutup grup');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleDeleteGroup = async () => {
+    setActionLoading(true);
+    try {
+      await api.delete(`/groups/${id}`);
+      setIsDeleteConfirmOpen(false);
+      navigate('/groups');
+    } catch (e) {
+      showToast(e.response?.data?.detail || 'Gagal menghapus grup');
+    } finally {
+      setActionLoading(false);
     }
   };
 
@@ -101,12 +140,25 @@ const GroupDetail = () => {
           <section className="bg-surface-container-lowest rounded-xl p-8 shadow-sm">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
               <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="material-symbols-outlined text-primary text-sm">{group.icon || CATEGORY_ICONS[group.category] || 'category'}</span>
-                  <span className="text-xs font-bold uppercase tracking-widest text-primary/60 font-body">{group.category}</span>
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="flex items-center gap-2">
+                    <span className="material-symbols-outlined text-primary text-sm">{group.icon || CATEGORY_ICONS[group.category] || 'category'}</span>
+                    <span className="text-xs font-bold uppercase tracking-widest text-primary/60 font-body">{group.category}</span>
+                  </div>
+                  {group.status === 'closed' ? (
+                    <span className="bg-error/10 text-error text-[10px] font-black px-2 py-0.5 rounded-md uppercase tracking-widest font-body border border-error/20 flex items-center gap-1">
+                      <span className="material-symbols-outlined text-[10px]">lock</span>
+                      Ditutup
+                    </span>
+                  ) : (
+                    <span className="bg-secondary/10 text-secondary text-[10px] font-black px-2 py-0.5 rounded-md uppercase tracking-widest font-body border border-secondary/20 flex items-center gap-1">
+                      <span className="material-symbols-outlined text-[10px]">bolt</span>
+                      Aktif
+                    </span>
+                  )}
                 </div>
                 <h1 className="text-4xl font-extrabold tracking-tight text-on-surface mb-2 font-headline">{group.name}</h1>
-                <p className="text-on-surface-variant font-medium font-body">{group.member_count} anggota</p>
+                <p className="text-on-surface-variant font-medium font-body">{group.member_count} anggota • {group.payment_status}</p>
               </div>
               <div className="bg-surface-container-low p-6 rounded-xl text-right">
                 <p className="text-sm font-semibold text-on-surface-variant mb-1 uppercase tracking-tighter font-headline">Total Pengeluaran Grup</p>
@@ -114,20 +166,49 @@ const GroupDetail = () => {
               </div>
             </div>
             <div className="mt-8 pt-8 border-t border-surface-container-highest flex flex-wrap gap-4">
-              <button
-                onClick={() => setIsAddMemberModalOpen(true)}
-                className="bg-surface-container-high text-on-surface border border-outline-variant px-6 py-3 rounded-full font-bold flex items-center gap-2 hover:bg-surface-container-highest transition-all transform active:scale-95 font-body"
-              >
-                <span className="material-symbols-outlined">person_add</span>
-                Tambah Anggota
-              </button>
-              <button
-                onClick={() => setIsExpenseModalOpen(true)}
-                className="bg-gradient-to-r from-primary to-primary-container text-white px-6 py-3 rounded-full font-bold flex items-center gap-2 hover:opacity-90 transition-all transform active:scale-95 font-body"
-              >
-                <span className="material-symbols-outlined">add_circle</span>
-                Tambah Pengeluaran
-              </button>
+              {group.status === 'active' ? (
+                <>
+                  <button
+                    onClick={() => setIsAddMemberModalOpen(true)}
+                    className="bg-surface-container-high text-on-surface border border-outline-variant px-6 py-3 rounded-full font-bold flex items-center gap-2 hover:bg-surface-container-highest transition-all transform active:scale-95 font-body"
+                  >
+                    <span className="material-symbols-outlined">person_add</span>
+                    Tambah Anggota
+                  </button>
+                  <button
+                    onClick={() => setIsExpenseModalOpen(true)}
+                    className="bg-gradient-to-r from-primary to-primary-container text-white px-6 py-3 rounded-full font-bold flex items-center gap-2 hover:opacity-90 transition-all transform active:scale-95 font-body"
+                  >
+                    <span className="material-symbols-outlined">add_circle</span>
+                    Tambah Pengeluaran
+                  </button>
+                  {currentUser?.id === group.created_by && (
+                    <button
+                      onClick={() => setIsCloseConfirmOpen(true)}
+                      className="bg-surface-container-lowest text-on-surface border border-outline-variant px-6 py-3 rounded-full font-bold flex items-center gap-2 hover:bg-error/5 hover:text-error hover:border-error transition-all transform active:scale-95 font-body"
+                    >
+                      <span className="material-symbols-outlined">lock</span>
+                      Tutup Grup
+                    </button>
+                  )}
+                </>
+              ) : (
+                <>
+                  {currentUser?.id === group.created_by && (
+                    <button
+                      onClick={() => setIsDeleteConfirmOpen(true)}
+                      className="bg-error text-white px-6 py-3 rounded-full font-bold flex items-center gap-2 hover:opacity-90 transition-all transform active:scale-95 font-body"
+                    >
+                      <span className="material-symbols-outlined">delete_forever</span>
+                      Hapus Grup Permanen
+                    </button>
+                  )}
+                  <p className="text-on-surface-variant text-sm font-medium font-body flex items-center gap-2 bg-surface-container-low px-4 py-3 rounded-2xl border border-outline-variant/10">
+                    <span className="material-symbols-outlined text-error">info</span>
+                    Grup ini sudah ditutup. Tidak ada aktivitas baru yang diizinkan.
+                  </p>
+                </>
+              )}
             </div>
           </section>
 
@@ -149,7 +230,7 @@ const GroupDetail = () => {
                       <p className="font-semibold text-sm text-on-surface font-body truncate">{m.user.name}</p>
                       <p className="text-xs text-outline font-body capitalize">{m.role}</p>
                     </div>
-                    {currentUser && m.user_id !== currentUser.id && (
+                    {currentUser && m.user_id !== currentUser.id && group.status === 'active' && (
                       <button
                         onClick={() => handleRemoveMember(m.user_id)}
                         className="absolute top-2 right-2 p-1 rounded-full text-outline hover:text-error hover:bg-error/10 transition-all opacity-0 group-hover:opacity-100"
@@ -339,6 +420,37 @@ const GroupDetail = () => {
         groupId={id}
         onSuccess={fetchAll}
       />
+      
+      <ConfirmModal
+        isOpen={isCloseConfirmOpen}
+        onClose={() => setIsCloseConfirmOpen(false)}
+        onConfirm={handleCloseGroup}
+        loading={actionLoading}
+        title="Tutup Grup?"
+        message="Apakah Anda yakin ingin menutup grup ini? Setelah ditutup, tidak ada anggota yang bisa menambah pengeluaran baru."
+        confirmText="Ya, Tutup Sekarang"
+        cancelText="Batal"
+      />
+
+      <ConfirmModal
+        isOpen={isDeleteConfirmOpen}
+        onClose={() => setIsDeleteConfirmOpen(false)}
+        onConfirm={handleDeleteGroup}
+        loading={actionLoading}
+        title="Hapus Grup Permanen?"
+        message="Data grup, riwayat pengeluaran, dan saldo akan dihapus selamanya. Tindakan ini tidak dapat dibatalkan."
+        confirmText="Hapus Selamanya"
+        cancelText="Jangan Hapus"
+        type="danger"
+      />
+
+      <Toast 
+        isOpen={toast.isOpen}
+        message={toast.message}
+        type={toast.type}
+        onClose={() => setToast({ ...toast, isOpen: false })}
+      />
+
       <BottomNav onAddClick={() => setIsExpenseModalOpen(true)} />
     </div>
   );
