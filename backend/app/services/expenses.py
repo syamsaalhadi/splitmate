@@ -67,7 +67,8 @@ def create_expense(db: Session, group_id: UUID, payload: ExpenseCreate, current_
         if not payload.splits:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Custom split butuh data splits")
         total_splits = sum(Decimal(str(s.amount_owed)) for s in payload.splits)
-        if total_splits != Decimal(str(payload.amount)):
+        tolerance = Decimal("1.00")  # toleransi 1 rupiah akibat rounding
+        if abs(total_splits - Decimal(str(payload.amount))) > tolerance:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Total splits (Rp {total_splits}) harus sama dengan amount (Rp {payload.amount})")
         for s in payload.splits:
             split = ExpenseSplit(

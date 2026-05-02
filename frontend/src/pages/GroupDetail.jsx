@@ -29,6 +29,8 @@ const GroupDetail = () => {
   const [loading, setLoading] = useState(true);
   const [isCloseConfirmOpen, setIsCloseConfirmOpen] = useState(false);
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
+  const [isRemoveMemberConfirmOpen, setIsRemoveMemberConfirmOpen] = useState(false);
+  const [memberToRemove, setMemberToRemove] = useState(null);
   const [actionLoading, setActionLoading] = useState(false);
   const [toast, setToast] = useState({ isOpen: false, message: '', type: 'error' });
 
@@ -63,14 +65,24 @@ const GroupDetail = () => {
     setIsSettleModalOpen(true);
   };
 
-  const handleRemoveMember = async (userId) => {
-    if (!confirm('Hapus anggota ini dari grup?')) return;
+  const confirmRemoveMember = (member) => {
+    setMemberToRemove(member);
+    setIsRemoveMemberConfirmOpen(true);
+  };
+
+  const handleRemoveMember = async () => {
+    if (!memberToRemove) return;
+    setActionLoading(true);
     try {
-      await api.delete(`/groups/${id}/members/${userId}`);
+      await api.delete(`/groups/${id}/members/${memberToRemove.user_id}`);
+      setIsRemoveMemberConfirmOpen(false);
+      setMemberToRemove(null);
       showToast('Anggota berhasil dihapus', 'success');
       fetchAll();
     } catch (e) {
       showToast(e.response?.data?.detail || 'Gagal menghapus anggota');
+    } finally {
+      setActionLoading(false);
     }
   };
 

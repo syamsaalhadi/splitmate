@@ -26,11 +26,10 @@ const Navbar = () => {
     <>
       <nav className="fixed top-0 left-0 right-0 z-50 flex justify-center px-6 pt-4 transition-all duration-500">
         <div
-          className={`flex items-center justify-between w-full max-w-4xl px-3 py-2.5 rounded-full border transition-all duration-500 ${
-            scrolled
+          className={`flex items-center justify-between w-full max-w-4xl px-3 py-2.5 rounded-full border transition-all duration-500 ${scrolled
               ? 'bg-white/50 backdrop-blur-xl shadow-lg shadow-black/5 border-white/40'
               : 'bg-white/30 backdrop-blur-lg shadow-md shadow-black/5 border-white/20'
-          }`}
+            }`}
         >
           {/* Logo */}
           <Link
@@ -42,6 +41,17 @@ const Navbar = () => {
 
           {/* Nav Links (Desktop) */}
           <div className="hidden md:flex items-center gap-2">
+
+            <a
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className="px-5 py-2 text-sm font-semibold text-on-surface/70 hover:text-primary hover:bg-primary/5 rounded-full transition-all duration-300 font-body"
+            >
+              Home
+            </a>
             <a
               href="#fitur"
               className="px-5 py-2 text-sm font-semibold text-on-surface/70 hover:text-primary hover:bg-primary/5 rounded-full transition-all duration-300 font-body"
@@ -54,6 +64,7 @@ const Navbar = () => {
             >
               Tentang Kami
             </a>
+
           </div>
 
           {/* Right side: Hamburger (mobile) + CTA */}
@@ -84,7 +95,7 @@ const Navbar = () => {
       {/* Mobile Menu Drawer */}
       {menuOpen && (
         <>
-          <div 
+          <div
             className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 md:hidden"
             onClick={() => setMenuOpen(false)}
           />
