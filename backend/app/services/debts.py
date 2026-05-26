@@ -34,17 +34,17 @@ def get_group_debts(db: Session, group_id: UUID, current_user_id: UUID) -> dict:
 
     for exp in expenses:
         for s in exp.splits:
-            if not s.is_settled and s.user_id != exp.paid_by:
+            if s.user_id != exp.paid_by:
                 balances[exp.paid_by] = balances.get(exp.paid_by, 0) + float(s.amount_owed)
                 balances[s.user_id] = balances.get(s.user_id, 0) - float(s.amount_owed)
 
     from app.models.settlement import Settlement
-    pending_settlements = db.query(Settlement).filter(
+    all_settlements = db.query(Settlement).filter(
         Settlement.group_id == group_id, 
-        Settlement.status == "pending"
+        Settlement.status.in_(["pending", "confirmed"])
     ).all()
     
-    for ps in pending_settlements:
+    for ps in all_settlements:
         balances[ps.to_user] = balances.get(ps.to_user, 0) - float(ps.amount)
         balances[ps.from_user] = balances.get(ps.from_user, 0) + float(ps.amount)
 

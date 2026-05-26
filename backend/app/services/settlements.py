@@ -79,8 +79,8 @@ def _apply_settlement_to_splits(db: Session, group_id: UUID, from_user_id: UUID,
         if remaining <= 0:
             break
         split_amount = float(split.amount_owed)
-        if split_amount <= remaining:
-            # Full settlement — split fully covered
+        if split_amount <= remaining + 10.0:
+            # Full settlement — split fully covered (with 10.0 tolerance for float/rounding issues)
             split.is_settled = True
             split.settled_at = now
             remaining -= split_amount
