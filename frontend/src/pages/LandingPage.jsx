@@ -15,9 +15,10 @@ function useGsapReveal(containerRef) {
     const ctx = gsap.context(() => {
       // Fade up elements
       gsap.utils.toArray('.g-fade-up').forEach(el => {
-        gsap.fromTo(el, 
+        gsap.fromTo(el,
           { y: 40, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.8, ease: 'power2.out',
+          {
+            y: 0, opacity: 1, duration: 0.8, ease: 'power2.out',
             scrollTrigger: { trigger: el, start: 'top 90%', toggleActions: 'play none none none' },
           }
         );
@@ -181,7 +182,7 @@ const LandingPage = () => {
       <main className="relative z-10">
         {/* ══════════ HERO ══════════ */}
         <section ref={heroRef} className="relative min-h-[90vh] flex items-center pt-24 pb-16 md:pt-32 md:pb-24 lg:pt-16 lg:pb-12 overflow-hidden">
-          
+
           {/* Low-Opacity Diagonal Stripe Gradient per DESIGN.md */}
           <div className="absolute top-0 right-0 left-0 h-[480px] overflow-hidden -z-10 opacity-[0.08] pointer-events-none">
             <div className="absolute -top-[120px] -right-[100px] w-[900px] h-[160px] bg-gradient-to-r from-primary to-secondary rotate-[22deg]" />
@@ -239,7 +240,7 @@ const LandingPage = () => {
                   <div className="flex items-center gap-0.5 text-amber-500">
                     {[...Array(5)].map((_, i) => <span key={i} className="material-symbols-outlined text-[13px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>)}
                   </div>
-                  <p className="text-[10px] text-on-surface-variant font-medium">Dipercaya <strong>500K+</strong> pengguna aktif</p>
+                  <p className="text-[10px] text-on-surface-variant font-medium">Dipercaya <strong>banyak</strong> pengguna aktif</p>
                 </div>
               </div>
             </div>
@@ -247,7 +248,7 @@ const LandingPage = () => {
             {/* Right: Premium Interactive Command Palette Mockup (DESIGN.md centerpiece) */}
             <div className="lg:col-span-6 flex justify-center lg:justify-end">
               <div className="hero-palette-mockup w-full max-w-[500px] cmd-palette cmd-palette-glow flex flex-col text-left font-body text-xs text-on-surface select-none transform transition-transform duration-300 hover:scale-[1.01]">
-                
+
                 {/* Search Bar / Header */}
                 <div className="flex items-center gap-3 px-4 py-3 border-b border-outline-variant/40 bg-surface-container-lowest">
                   {/* macOS dots */}
@@ -265,20 +266,19 @@ const LandingPage = () => {
 
                 {/* Main Content Area */}
                 <div className="flex flex-row h-[280px] bg-white">
-                  
+
                   {/* Left Column: Command Rows list */}
                   <div className="w-[55%] border-r border-outline-variant/30 p-2 space-y-1 overflow-hidden">
                     <p className="text-[9px] font-semibold text-on-surface-variant/50 uppercase tracking-wider px-2.5 py-1">Rekomendasi</p>
-                    
+
                     {COMMANDS.map((cmd) => {
                       const isActive = activeCommand === cmd.id;
                       return (
                         <div
                           key={cmd.id}
                           onClick={() => setActiveCommand(cmd.id)}
-                          className={`flex items-center justify-between px-2.5 py-2 rounded-md cursor-pointer transition-all duration-200 ${
-                            isActive ? 'cmd-row-active font-medium' : 'hover:bg-slate-50'
-                          }`}
+                          className={`flex items-center justify-between px-2.5 py-2 rounded-md cursor-pointer transition-all duration-200 ${isActive ? 'cmd-row-active font-medium' : 'hover:bg-slate-50'
+                            }`}
                         >
                           <div className="flex items-center gap-2">
                             <span className="material-symbols-outlined text-base">
@@ -364,7 +364,7 @@ const LandingPage = () => {
 
             {/* Premium Bento Grid Structure */}
             <div className="g-stagger-parent grid grid-cols-1 md:grid-cols-6 gap-6">
-              
+
               {/* Card 1: Split Otomatis (Col-span 4 on large, detailed custom UI inside) */}
               <div className="g-stagger-child md:col-span-4 bg-surface-container-low p-6 md:p-8 rounded-xl hairline-border flex flex-col md:flex-row gap-6 justify-between items-start card-tilt icon-bounce-hover">
                 <div className="space-y-5 max-w-sm w-full">
@@ -391,7 +391,7 @@ const LandingPage = () => {
                         Rp {billAmount.toLocaleString('id-ID')}
                       </span>
                     </div>
-                    
+
                     <input
                       type="range"
                       min="30000"
@@ -401,7 +401,7 @@ const LandingPage = () => {
                       onChange={(e) => setBillAmount(Number(e.target.value))}
                       className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-primary focus:outline-none"
                     />
-                    
+
                     <div className="flex items-center justify-between text-[10px] text-on-surface-variant/50 font-medium">
                       <span>Rp 30.000</span>
                       <span>Rp 1.500.000</span>
@@ -410,21 +410,19 @@ const LandingPage = () => {
                     <div className="flex gap-2 pt-1">
                       <button
                         onClick={() => setSplitType('rata')}
-                        className={`flex-1 py-1.5 px-3 rounded text-[10px] font-medium transition-all duration-200 border ${
-                          splitType === 'rata'
+                        className={`flex-1 py-1.5 px-3 rounded text-[10px] font-medium transition-all duration-200 border ${splitType === 'rata'
                             ? 'bg-primary text-on-primary border-primary shadow-sm font-bold'
                             : 'bg-white hover:bg-slate-50 text-on-surface-variant border-outline-variant/40'
-                        }`}
+                          }`}
                       >
                         Bagi Rata (1/3)
                       </button>
                       <button
                         onClick={() => setSplitType('kustom')}
-                        className={`flex-1 py-1.5 px-3 rounded text-[10px] font-medium transition-all duration-200 border ${
-                          splitType === 'kustom'
+                        className={`flex-1 py-1.5 px-3 rounded text-[10px] font-medium transition-all duration-200 border ${splitType === 'kustom'
                             ? 'bg-primary text-on-primary border-primary shadow-sm font-bold'
                             : 'bg-white hover:bg-slate-50 text-on-surface-variant border-outline-variant/40'
-                        }`}
+                          }`}
                       >
                         Kustom Menu
                       </button>
@@ -441,17 +439,15 @@ const LandingPage = () => {
                   <div className="flex gap-2">
                     <button
                       onClick={() => setSplitType('rata')}
-                      className={`text-[9px] px-2.5 py-0.5 rounded-full font-medium transition-all ${
-                        splitType === 'rata' ? 'bg-primary text-on-primary' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                      }`}
+                      className={`text-[9px] px-2.5 py-0.5 rounded-full font-medium transition-all ${splitType === 'rata' ? 'bg-primary text-on-primary' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                        }`}
                     >
                       Bagi Rata
                     </button>
                     <button
                       onClick={() => setSplitType('kustom')}
-                      className={`text-[9px] px-2.5 py-0.5 rounded-full font-medium transition-all ${
-                        splitType === 'kustom' ? 'bg-primary text-on-primary' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                      }`}
+                      className={`text-[9px] px-2.5 py-0.5 rounded-full font-medium transition-all ${splitType === 'kustom' ? 'bg-primary text-on-primary' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                        }`}
                     >
                       Kustom
                     </button>
@@ -459,15 +455,15 @@ const LandingPage = () => {
                   <div className="space-y-1.5">
                     {(splitType === 'rata'
                       ? [
-                          { name: 'Andi', val: `Rp ${Math.round(billAmount / 3).toLocaleString('id-ID')}`, share: 'Porsi Sama (33.3%)' },
-                          { name: 'Sarah', val: `Rp ${Math.round(billAmount / 3).toLocaleString('id-ID')}`, share: 'Porsi Sama (33.3%)' },
-                          { name: 'Kamu', val: `Rp ${Math.round(billAmount / 3).toLocaleString('id-ID')}`, share: 'Porsi Sama (33.3%)' },
-                        ]
+                        { name: 'Andi', val: `Rp ${Math.round(billAmount / 3).toLocaleString('id-ID')}`, share: 'Porsi Sama (33.3%)' },
+                        { name: 'Sarah', val: `Rp ${Math.round(billAmount / 3).toLocaleString('id-ID')}`, share: 'Porsi Sama (33.3%)' },
+                        { name: 'Kamu', val: `Rp ${Math.round(billAmount / 3).toLocaleString('id-ID')}`, share: 'Porsi Sama (33.3%)' },
+                      ]
                       : [
-                          { name: 'Andi', val: `Rp ${Math.round(billAmount * 0.5).toLocaleString('id-ID')}`, share: '🍔 Burger Premium (50%)' },
-                          { name: 'Sarah', val: `Rp ${Math.round(billAmount * 0.3).toLocaleString('id-ID')}`, share: '🍜 Ramen Spesial (30%)' },
-                          { name: 'Kamu', val: `Rp ${Math.round(billAmount * 0.2).toLocaleString('id-ID')}`, share: '🍹 Es Teh Manis (20%)' },
-                        ]
+                        { name: 'Andi', val: `Rp ${Math.round(billAmount * 0.5).toLocaleString('id-ID')}`, share: '🍔 Burger Premium (50%)' },
+                        { name: 'Sarah', val: `Rp ${Math.round(billAmount * 0.3).toLocaleString('id-ID')}`, share: '🍜 Ramen Spesial (30%)' },
+                        { name: 'Kamu', val: `Rp ${Math.round(billAmount * 0.2).toLocaleString('id-ID')}`, share: '🍹 Es Teh Manis (20%)' },
+                      ]
                     ).map((item, idx) => (
                       <div key={idx} className="flex justify-between items-center bg-slate-50/50 px-2 py-1.5 rounded-lg border border-outline-variant/10 hover:bg-slate-100/50 transition-colors">
                         <div className="text-[9px] font-medium flex flex-col">
@@ -704,7 +700,7 @@ const LandingPage = () => {
         <section className="max-w-[1240px] mx-auto px-6 py-24">
           <div className="g-scale-in relative bg-gradient-to-br from-primary to-primary-container rounded-2xl p-12 md:p-20 text-center overflow-hidden">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.06),transparent)]" />
-            
+
             <div className="relative z-10 space-y-6 max-w-xl mx-auto">
               <h2 className="text-3xl md:text-5xl font-semibold tracking-tight text-on-primary">
                 Siap Hidup Bebas Drama Finansial?
