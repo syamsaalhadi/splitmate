@@ -9,6 +9,7 @@ import api from '../services/api';
 import { AuthContext } from '../context/AuthContext';
 import useCountUp from '../hooks/useCountUp';
 import useAnimateOnMount from '../hooks/useAnimateOnMount';
+import { useQuery } from '@tanstack/react-query';
 
 const CATEGORY_ICONS = { trip: 'flight', kosan: 'home', couple: 'favorite', other: 'category' };
 const CATEGORY_COLORS = {
@@ -32,15 +33,10 @@ const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
   const [isGroupModalOpen, setIsGroupModalOpen] = useState(false);
-  const [groups, setGroups] = useState([]);
-  const [invitations, setInvitations] = useState([]);
-  const [debts, setDebts] = useState(null);
-  const [activities, setActivities] = useState([]);
-  const [financialScore, setFinancialScore] = useState({ score: 0, label: 'Menghitung...' });
-  const [loading, setLoading] = useState(true);
 
-  const fetchData = async () => {
-    try {
+  const { data, isLoading: loading, refetch } = useQuery({
+    queryKey: ['dashboard-data'],
+    queryFn: async () => {
       const [gRes, dRes, aRes, invRes, scoreRes] = await Promise.all([
         api.get('/groups'),
         api.get('/users/me/debts'),
@@ -48,21 +44,26 @@ const Dashboard = () => {
         api.get('/groups/invitations'),
         api.get('/users/me/financial-score')
       ]);
-      setGroups(gRes.data.slice(0, 3));
-      setDebts(dRes.data);
-      setActivities(aRes.data);
-      setInvitations(invRes.data);
-      setFinancialScore(scoreRes.data);
-    } catch (e) { if (import.meta.env.DEV) console.error(e); }
-    finally { setLoading(false); }
-  };
+      return {
+        groups: gRes.data.slice(0, 3),
+        debts: dRes.data,
+        activities: aRes.data,
+        invitations: invRes.data,
+        financialScore: scoreRes.data
+      };
+    }
+  });
 
-  useEffect(() => { fetchData(); }, []);
+  const groups = data?.groups || [];
+  const debts = data?.debts || null;
+  const activities = data?.activities || [];
+  const invitations = data?.invitations || [];
+  const financialScore = data?.financialScore || { score: 0, label: 'Menghitung...' };
 
   const handleRespondInvite = async (groupId, action) => {
     try {
       await api.patch(`/groups/invitations/${groupId}`, { action });
-      fetchData();
+      refetch();
     } catch (e) {
       if (import.meta.env.DEV) console.error(e);
     }
@@ -352,7 +353,7 @@ const Dashboard = () => {
 
       {/* Modals */}
       <NewExpenseModal isOpen={isExpenseModalOpen} onClose={() => setIsExpenseModalOpen(false)} />
-      <CreateGroupModal isOpen={isGroupModalOpen} onClose={() => setIsGroupModalOpen(false)} onSuccess={fetchData} />
+      <CreateGroupModal isOpen={isGroupModalOpen} onClose={() => setIsGroupModalOpen(false)} onSuccess={refetch} />
     </div>
   );
 };

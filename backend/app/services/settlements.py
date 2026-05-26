@@ -73,13 +73,13 @@ def _apply_settlement_to_splits(db: Session, group_id: UUID, from_user_id: UUID,
         .all()
     )
 
-    remaining = float(amount)
+    remaining = Decimal(str(amount))
     now = datetime.now(timezone.utc)
     for split in splits:
-        if remaining <= 0:
+        if remaining <= Decimal("0.0"):
             break
-        split_amount = float(split.amount_owed)
-        if split_amount <= remaining + 10.0:
+        split_amount = Decimal(str(split.amount_owed))
+        if split_amount <= remaining + Decimal("10.0"):
             # Full settlement — split fully covered (with 10.0 tolerance for float/rounding issues)
             split.is_settled = True
             split.settled_at = now
