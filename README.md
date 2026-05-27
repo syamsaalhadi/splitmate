@@ -16,6 +16,15 @@ SplitMate membantu memecahkan masalah pembagian tagihan dan pencatatan utang kel
 - **Database**: PostgreSQL (Supabase)
 - **AI/ML Model**: TensorFlow / Keras (Focal Loss, Attention, LSTM/GRU)
 
+### 👥 Tim Pengembang (CC26-PSU310):
+| Nama | Role |
+|------|------|
+| Syamsa Al Hadi | Full-Stack Web Developer (Frontend Lead) |
+| Putra Indika Malik Hakim | Full-Stack Web Developer (Backend Lead) |
+| Angelika Revalina Rismawati | Data Scientist (Data Wrangling & EDA) |
+| Azza Kamila Al Haq | AI Engineer (Model Klasifikasi) |
+| Mamluatul 'Azazah | AI Engineer (Model Prediksi) |
+
 ---
 
 ## 🛠️ Petunjuk Setup Environment
