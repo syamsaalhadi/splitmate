@@ -2,6 +2,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import streamlit as st
+from pathlib import Path
+import pandas as pd
 
 sns.set(style="whitegrid")
 
@@ -139,7 +141,8 @@ html, body, [class*="css"] {
 """, unsafe_allow_html=True)
 
 #Load Data
-df = pd.read_csv("cleaned_finance_data.csv")
+BASE_DIR = Path(__file__).resolve().parent
+df = pd.read_csv(BASE_DIR / "cleaned_finance_data.csv")
 
 df["date"] = pd.to_datetime(df["date"])
 df = df.sort_values("date").reset_index(drop=True)
