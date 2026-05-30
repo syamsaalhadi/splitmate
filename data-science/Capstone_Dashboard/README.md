@@ -46,7 +46,7 @@ Dashboard digunakan untuk:
 
 # 📁 Struktur Folder
 ```text
-Capstone/
+Capstone_Dashboard/
 │
 ├── dashboard/
 │   ├── dashboard.py
