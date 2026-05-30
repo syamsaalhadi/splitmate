@@ -714,7 +714,7 @@ elif menu == "💳 Payment Method":
                 data=payment_amount,
                 x="payment_mode",
                 y="amount_idr",
-                hue="tipe_hari",
+                hue="payment_mode",
                 palette=colors,
                 ax=ax
             )
