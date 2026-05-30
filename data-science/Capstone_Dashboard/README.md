@@ -14,6 +14,12 @@ Dashboard ini membantu pengguna memahami pola pemasukan, pengeluaran, cashflow, 
 
 ---
 
+# 🌐 Akses Dashboard
+Dashboard dapat diakses secara langsung melalui Streamlit Cloud:
+👉 **https://capstone-project-dashboard-cp.streamlit.app/**
+
+---
+
 # 🎯 Tujuan Project
 Project ini dikembangkan sebagai bagian dari Capstone Project Coding Camp 2026 untuk mendukung platform **SplitMate**, yaitu aplikasi manajemen keuangan kelompok berbasis AI.
 
