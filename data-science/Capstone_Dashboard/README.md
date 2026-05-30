@@ -15,7 +15,7 @@ Dashboard ini membantu pengguna memahami pola pemasukan, pengeluaran, cashflow, 
 ---
 
 # 🌐 Akses Dashboard
-Dashboard dapat diakses secara langsung melalui Streamlit Cloud:
+Dashboard dapat diakses secara langsung melalui Streamlit Cloud:  
 👉 **https://capstone-project-dashboard-cp.streamlit.app/**
 
 ---
