@@ -54,7 +54,7 @@ Capstone/
 ---
 
 # 🚀 Menjalankan Project
-## 1. Masuk ke Folder Project
+## 1. Masuk ke Folder Capstone Dashboard
 ```bash
 cd Capstone_Dashboard
 ```
