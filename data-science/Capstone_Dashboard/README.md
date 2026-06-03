@@ -164,6 +164,6 @@ requirements.txt
 # ✨ Penutup
 Dashboard ini dikembangkan sebagai bagian dari Capstone Project SplitMate untuk membantu pengguna memahami kondisi keuangan mereka melalui visualisasi data yang interaktif dan mudah dipahami.
 
-**Author:** Tim SplitMate
-**Project:** SplitMate Capstone Project - CC26-PSU310
-**Program:** Coding Camp 2026
+- **Author:** Tim SplitMate
+- **Project:** SplitMate Capstone Project - CC26-PSU310
+- **Program:** Coding Camp 2026
