@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import streamlit as st
 from pathlib import Path
-import pandas as pd
 
 sns.set(style="whitegrid")
 
@@ -471,14 +470,19 @@ elif menu == "📈 Cashflow Bulanan":
         "amount_idr"
     ].values[0]
 
+    if weekday_total > weekend_total:
+        pola_hari = "lebih aktif pada hari kerja dibandingkan akhir pekan"
+    else:
+        pola_hari = "lebih aktif pada akhir pekan dibandingkan hari kerja"
+    
     insight_box(
-        "📌 Insight Cashflow",
+        "📌 Insight dan Kesimpulan Cashflow",
         [
-            f"Terdapat <b>{bulan_defisit}</b> bulan dengan kondisi defisit.",
+            f"Dari periode data yang dipilih, terdapat <b>{bulan_defisit}</b> bulan dengan kondisi defisit, yaitu ketika pengeluaran lebih besar daripada pemasukan.",
             f"Aktivitas transaksi tertinggi terjadi pada hari <b>{top_day}</b>.",
-            f"Total transaksi pada <b>weekday</b> mencapai <b>{short_rupiah(weekday_total)}</b>.",
-            f"Total transaksi pada <b>weekend</b> mencapai <b>{short_rupiah(weekend_total)}</b>.",
-            "Pola ini menunjukkan bahwa pengguna cenderung lebih aktif melakukan transaksi pada hari kerja dibanding akhir pekan."
+            f"Total nominal transaksi pada <b>weekday</b> mencapai <b>{short_rupiah(weekday_total)}</b>, sedangkan pada <b>weekend</b> mencapai <b>{short_rupiah(weekend_total)}</b>.",
+            f"Kesimpulannya, pengguna cenderung <b>{pola_hari}</b>.",
+            "Insight ini dapat digunakan SplitMate untuk memahami pola cashflow pengguna dan memberikan peringatan ketika pengeluaran mulai melebihi pemasukan."
         ]
     )
 
@@ -577,12 +581,12 @@ elif menu == "🍽️ Kategori Pengeluaran":
         ).iloc[0]["jumlah_transaksi"]
 
         insight_box(
-            "📌 Insight Kategori",
+            "📌 Insight dan Kesimpulan Kategori",
             [
-                f"Kategori <b>{top_category}</b> menjadi kategori dengan total pengeluaran terbesar.",
-                f"Total pengeluaran pada kategori tersebut mencapai <b>{format_rupiah(top_amount)}</b>.",
-                f"Kategori dengan jumlah transaksi terbanyak adalah <b>{top_transaction_category}</b> sebanyak <b>{format_angka(top_transaction_count)}</b> transaksi.",
-                "Informasi ini dapat membantu SplitMate mengidentifikasi kategori pengeluaran yang paling dominan dari sisi nominal maupun frekuensi transaksi."
+                f"Kategori <b>{top_category}</b> menjadi kategori dengan total pengeluaran terbesar, yaitu sebesar <b>{format_rupiah(top_amount)}</b>.",
+                f"Sementara itu, kategori dengan frekuensi transaksi terbanyak adalah <b>{top_transaction_category}</b> dengan total <b>{format_angka(top_transaction_count)}</b> transaksi.",
+                "Hal ini menunjukkan bahwa kategori pengeluaran terbesar secara nominal belum tentu menjadi kategori yang paling sering dilakukan.",
+                "Kesimpulannya, SplitMate dapat memanfaatkan informasi ini untuk membantu pengguna mengenali kategori pengeluaran yang paling membebani cashflow mereka."
             ]
         )
     else:
@@ -648,11 +652,12 @@ elif menu == "👤 User Deficit":
             jumlah_defisit = (user_cashflow["net_cashflow"] < 0).sum()
 
             insight_box(
-                "📌 Insight User Deficit",
+                "📌 Insight dan Kesimpulan User Deficit",
                 [
-                    f"Terdapat <b>{jumlah_defisit}</b> pengguna yang mengalami defisit.",
-                    "Kondisi ini menunjukkan adanya pengguna dengan pengeluaran lebih besar daripada pemasukan.",
-                    "Pola ini dapat menjadi dasar fitur financial score atau peringatan otomatis pada SplitMate."
+                    f"Terdapat <b>{jumlah_defisit}</b> pengguna yang mengalami defisit pada periode data yang dipilih.",
+                    "Defisit terjadi ketika total pengeluaran pengguna lebih besar daripada total pemasukan.",
+                    "Kondisi ini menunjukkan adanya kelompok pengguna yang berpotensi membutuhkan peringatan atau evaluasi keuangan.",
+                    "Kesimpulannya, informasi ini dapat menjadi dasar pengembangan fitur financial score, budgeting alert, atau peringatan otomatis pada SplitMate."
                 ]
             )
         else:
@@ -684,6 +689,7 @@ elif menu == "💳 Payment Method":
                 y="jumlah_transaksi",
                 hue="payment_mode",
                 palette=colors,
+                legend=False,
                 ax=ax
             )
 
@@ -735,15 +741,18 @@ elif menu == "💳 Payment Method":
             st.pyplot(fig)
         else:
             st.info("Tidak ada data nominal metode pembayaran.")
-
+    
     top_payment = payment_count.iloc[0]["payment_mode"] if not payment_count.empty else "-"
-
+    top_payment_amount = payment_amount.iloc[0]["payment_mode"] if not payment_amount.empty else "-"
+    top_payment_nominal = payment_amount.iloc[0]["amount_idr"] if not payment_amount.empty else 0
+    
     insight_box(
-        "📌 Insight Payment Method",
+        "📌 Insight dan Kesimpulan Payment Method",
         [
             f"Metode pembayaran yang paling sering digunakan adalah <b>{top_payment}</b>.",
-            "Informasi ini dapat membantu SplitMate menentukan prioritas integrasi pembayaran.",
-            "Metode pembayaran dominan juga dapat digunakan untuk memahami preferensi transaksi pengguna."
+            f"Metode pembayaran dengan total nominal transaksi terbesar adalah <b>{top_payment_amount}</b> dengan total sebesar <b>{format_rupiah(top_payment_nominal)}</b>.",
+            "Hal ini menunjukkan bahwa metode pembayaran yang paling sering digunakan belum tentu memiliki nominal transaksi terbesar.",
+            "Kesimpulannya, informasi ini dapat membantu SplitMate memahami preferensi pembayaran pengguna dan menentukan prioritas integrasi metode pembayaran."
         ]
     )
 
@@ -807,7 +816,9 @@ elif menu == "🔥 High Spending":
             data=weekend_summary,
             x="tipe_hari",
             y="amount_idr",
+            hue="tipe_hari",
             palette=colors,
+            legend=False,
             ax=ax
         )
 
@@ -825,12 +836,24 @@ elif menu == "🔥 High Spending":
             )
         st.pyplot(fig)
 
+        top_high_month = high_monthly.sort_values(
+            by="amount_idr",
+            ascending=False
+        ).iloc[0]["year_month"]
+        
+        top_high_amount = high_monthly.sort_values(
+            by="amount_idr",
+            ascending=False
+        ).iloc[0]["amount_idr"]
+        
         insight_box(
-            "📌 Insight High Spending",
+            "📌 Insight dan Kesimpulan High Spending",
             [
-                f"Transaksi high spending didefinisikan sebagai pengeluaran di atas <b>{format_rupiah(threshold)}</b>.",
-                "Transaksi besar perlu dipantau karena dapat memengaruhi stabilitas cashflow pengguna.",
-                "Analisis ini dapat digunakan SplitMate untuk memberi notifikasi ketika pengguna melakukan transaksi besar."
+                f"Transaksi high spending didefinisikan sebagai pengeluaran dengan nominal minimal <b>{format_rupiah(threshold)}</b> atau berada pada kuartil atas pengeluaran.",
+                f"Jumlah transaksi high spending tercatat sebanyak <b>{format_angka(len(high_spending))}</b> transaksi dengan total nominal sebesar <b>{format_rupiah(high_spending['amount_idr'].sum())}</b>.",
+                f"Bulan dengan total high spending tertinggi adalah <b>{top_high_month}</b> sebesar <b>{format_rupiah(top_high_amount)}</b>.",
+                "Kesimpulannya, transaksi besar perlu dipantau karena dapat memengaruhi stabilitas cashflow pengguna.",
+                "Insight ini dapat digunakan SplitMate untuk memberikan notifikasi ketika pengguna melakukan transaksi besar."
             ]
         )
     else:
