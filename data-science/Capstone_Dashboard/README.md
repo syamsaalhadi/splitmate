@@ -161,39 +161,6 @@ requirements.txt
 
 ---
 
-# 🛠️ Troubleshooting
-## ❌ ModuleNotFoundError
-Install ulang dependency:
-```bash
-pip install -r requirements.txt
-```
-
----
-
-## ❌ File CSV tidak ditemukan
-Pastikan file berikut:
-```text
-cleaned_finance_data.csv
-```
-berada di dalam folder:
-```text
-dashboard/
-```
-
----
-
-## ❌ Streamlit tidak dikenali
-Install Streamlit dengan perintah:
-```bash
-pip install streamlit
-```
-atau:
-```bash
-python -m pip install streamlit
-```
-
----
-
 # ✨ Penutup
 Dashboard ini dikembangkan sebagai bagian dari Capstone Project SplitMate untuk membantu pengguna memahami kondisi keuangan mereka melalui visualisasi data yang interaktif dan mudah dipahami.
 
