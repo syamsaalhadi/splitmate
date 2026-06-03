@@ -51,7 +51,7 @@ Capstone_Dashboard/
 ├── dashboard/
 │   ├── dashboard.py
 │   ├── cleaned_finance_data.csv
-│   └── screenshot_dashboard.png
+│   └── picture.png
 │
 ├── README.md
 └── requirements.txt
