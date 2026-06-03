@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     jwt_expire_minutes: int = 1440
     cookie_secure: bool = False  # Set True di production (HTTPS)
     cookie_samesite: str = "lax"  # Set "none" di production (cross-domain)
-    cors_origins: str = "http://localhost:5173,http://localhost:3000"
+    cors_origins: str = "http://localhost:5173,http://localhost:3000,https://splitmate-cc26-psu310.vercel.app"
 
     @property
     def cors_origins_list(self) -> list[str]:
